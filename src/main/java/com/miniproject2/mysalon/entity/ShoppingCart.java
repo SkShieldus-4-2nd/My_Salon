@@ -1,11 +1,13 @@
 package com.miniproject2.mysalon.entity;
 
-import com.miniproject2.mysalon.entity.ProductDetail;
-import com.miniproject2.mysalon.entity.ShoppingCartKey;
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
 
 @Entity
 @Table(name = "shopping_cart")
+@Getter
+@Setter
 public class ShoppingCart {
 
     @EmbeddedId

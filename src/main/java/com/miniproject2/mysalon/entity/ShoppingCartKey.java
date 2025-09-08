@@ -7,9 +7,10 @@ import lombok.Setter;
 import java.io.Serializable;
 
 @Embeddable
+@Getter
+@Setter
 public class ShoppingCartKey implements Serializable {
-    @Getter
-    @Setter
+
     private Long userNum;
     private Long productDetailNum;
 

@@ -1,6 +1,5 @@
 package com.miniproject2.mysalon.entity;
 
-import com.miniproject2.mysalon.repository.ProductRepository;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

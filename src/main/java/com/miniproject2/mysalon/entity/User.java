@@ -49,7 +49,7 @@ public class User {
 
     //사용자 타입
     @Enumerated(EnumType.STRING) // 중요!
-    private UserType usertype;
+    private UserType type;
 
     @Column(nullable = true)
     private String storeName;
