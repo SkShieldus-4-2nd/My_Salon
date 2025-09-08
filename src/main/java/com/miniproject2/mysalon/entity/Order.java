@@ -5,6 +5,12 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.CreationTimestamp;
+
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 @Entity
 @Table(name = "orders")
@@ -22,10 +28,24 @@ public class Order {
     @Column(nullable = false)
     private Long totalPrice;
 
+    @CreationTimestamp
+    @Column(name = "ordered_at", updatable = false)
+    private LocalDateTime orderedAt;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_num")
     private User user;
 
+
+    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
+    @Builder.Default
+    private List<OrderProduct> orderProducts = new ArrayList<>();
+
+
+
+    @Column
+    @Enumerated(EnumType.STRING)
+    private OrderStatus orderStatus;
 
 
 }

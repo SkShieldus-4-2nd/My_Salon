@@ -1,0 +1,22 @@
+package com.miniproject2.mysalon.entity;
+
+public enum CategoryLow {
+    //TOP
+    SHORT_SLEEVE, LONG_SLEEVE, SHIRT_BLOUSE, KNIT_SWEATER, SWEATSHIRT_HOODIE, OTHERS,
+
+    //OUTERWEAR
+    CARDIGAN, JACKET, COAT,
+
+    //DRESS_SKIRT
+    MINI, MIDI, LONG,
+
+    //ACC_BAG
+    BAG, HAT, ACCESSORIES,
+
+    //LOUNGEWEAR_UNDERWEAR
+    PAJAMAS, UNDERWEAR,
+
+    //KIDS
+    TOPS, BOTTOMS
+
+    }

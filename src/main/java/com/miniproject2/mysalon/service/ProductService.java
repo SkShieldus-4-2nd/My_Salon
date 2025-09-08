@@ -27,6 +27,7 @@ public class ProductService {
                 .description(request.getDescription())
                 .gender(request.getGender())
                 .category(request.getCategory())
+                .categoryLow(request.getCategoryLow())
                 .build();
 
         Product savedProduct = productRepository.save(product);
@@ -52,9 +53,9 @@ public class ProductService {
         Product product = productRepository.findById(productId)
                 .orElseThrow(() -> new IllegalArgumentException("Product not found"));
 
-        List<ProductDetail> productDetails = productDetailRepository.findByProduct(product);
 
-        return ProductDTO.Response.fromEntity(product, productDetails);
+
+        return ProductDTO.Response.fromEntity(product, product.getProductDetails());
     }
 
     // Add methods for update and delete

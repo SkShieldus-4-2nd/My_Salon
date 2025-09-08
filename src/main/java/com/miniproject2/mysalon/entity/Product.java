@@ -6,6 +6,12 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import java.util.ArrayList;
+import java.util.List;
+
 @Entity
 @Table(name = "products")
 @Data
@@ -39,5 +45,12 @@ public class Product {
     @Enumerated(EnumType.STRING)
     private Category category;
 
+    @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
+    private CategoryLow categoryLow;
+
+    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
+    @Builder.Default
+    private List<ProductDetail> productDetails = new ArrayList<>();
 
 }

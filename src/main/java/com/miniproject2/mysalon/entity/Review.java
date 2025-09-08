@@ -34,7 +34,6 @@ public class Review {
     @Column(nullable = false)
     private Short score;
 
-
     @Column(nullable = true)
     private String reviewImage;
 

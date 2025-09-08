@@ -1,9 +1,6 @@
 package com.miniproject2.mysalon.controller.dto;
 
-import com.miniproject2.mysalon.entity.Category;
-import com.miniproject2.mysalon.entity.Gender;
-import com.miniproject2.mysalon.entity.Product;
-import com.miniproject2.mysalon.entity.ProductDetail;
+import com.miniproject2.mysalon.entity.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
@@ -38,6 +35,9 @@ public class ProductDTO {
 
         @NotNull(message = "카테고리는 필수 입력 항목입니다.")
         private Category category;
+
+        @NotNull(message = "세부 카테고리는 필수 입력 항목입니다.")
+        private CategoryLow categoryLow;
         private List<ProductDetailDTO> productDetails;
     }
 
@@ -53,6 +53,7 @@ public class ProductDTO {
         private String description;
         private Gender gender;
         private Category category;
+        private CategoryLow categoryLow;
         private List<ProductDetailDTO> productDetails;
 
         public static Response fromEntity(Product product, List<ProductDetail> productDetails) {
@@ -64,6 +65,7 @@ public class ProductDTO {
                     .description(product.getDescription())
                     .gender(product.getGender())
                     .category(product.getCategory())
+                    .categoryLow(product.getCategoryLow())
                     .productDetails(productDetails.stream().map(productDetail -> ProductDetailDTO.builder()
                             .productDetailNum(productDetail.getProductDetailNum())
                             .size(productDetail.getSize())
