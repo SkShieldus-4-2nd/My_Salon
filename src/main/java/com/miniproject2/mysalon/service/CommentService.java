@@ -1,7 +1,9 @@
 package com.miniproject2.mysalon.service;
 
+import com.miniproject2.mysalon.entity.Comment;
 import com.miniproject2.mysalon.entity.Post;
 import com.miniproject2.mysalon.entity.User;
+import com.miniproject2.mysalon.repository.CommentRepository;
 import com.miniproject2.mysalon.repository.PostRepository;
 import com.miniproject2.mysalon.repository.UserRepository;
 import jakarta.transaction.Transactional;
@@ -11,22 +13,25 @@ import org.springframework.stereotype.Service;
 @Service
 @RequiredArgsConstructor
 @Transactional
-public class PostService {
+public class CommentService {
 
-    private final PostRepository postRepository;
+    private final CommentRepository commentRepository;
     private final UserRepository userRepository;
+    private final PostRepository postRepository;
 
-    public Post createPost(Long userNum, String title, String text) {
+    public Comment createComment(Long userNum, Long postNum, String text) {
         User user = userRepository.findById(userNum).orElseThrow();
-        Post post = Post.builder()
+        Post post = postRepository.findById(postNum).orElseThrow();
+        Comment comment = Comment.builder()
                 .user(user)
-                .title(title)
+                .post(post)
                 .text(text)
                 .build();
-        return postRepository.save(post);
+        return commentRepository.save(comment);
     }
 
-    public void deletePost(Long postNum) {
-        postRepository.deleteById(postNum);
+
+    public void deleteComment(Long commentNum) {
+        commentRepository.deleteById(commentNum);
     }
 }
