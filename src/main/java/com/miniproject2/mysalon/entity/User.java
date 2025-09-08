@@ -34,16 +34,21 @@ public class User {
     @Column(nullable = false)
     private String userName;
 
-    //프로필
-    private String profileUrl;
+
+    //프로필 이미지
+    @Column
+    private String profileImage;
 
     //키
+    @Column
     private Short tall;
 
     //몸무게
+    @Column
     private Short weight;
 
     //사용자 타입
+    @Enumerated(EnumType.STRING) // 중요!
     private UserType type;
 
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL)

@@ -19,8 +19,11 @@ public class OrderProduct {
     private Long orderProductNum;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "product_num")
-    private Product product;
+    @JoinColumn(name = "product_detail_num")
+    private ProductDetail productDetail;
+
+    @Column(nullable = false)
+    private Integer count;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "order_num")

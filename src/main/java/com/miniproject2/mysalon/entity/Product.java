@@ -34,6 +34,14 @@ public class Product {
     @Column(nullable = false)
     private String description;
 
+
+    @Column(nullable = false)
+    private String gender;
+
+    @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
+    private Category category;
+
     @OneToMany(mappedBy = "product", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<Review> reviews = new ArrayList<>();
 

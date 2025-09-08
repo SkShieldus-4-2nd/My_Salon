@@ -35,6 +35,9 @@ public class Post {
     @JoinColumn(name = "user_num")
     private User user;
 
+    @Column(nullable = true)
+    private String image;
+
     @OneToMany(mappedBy = "post", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<Comment> comments = new ArrayList<>();
 
