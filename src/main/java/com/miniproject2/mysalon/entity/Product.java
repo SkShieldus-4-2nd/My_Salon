@@ -22,6 +22,9 @@ public class Product {
     @Column(name = "product_num")
     private Long productNum;
 
+    @OneToMany(mappedBy = "product", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private List<Review> reviews = new ArrayList<>();
+
     @Column(nullable = false)
     private String productName;
 
@@ -36,14 +39,11 @@ public class Product {
 
 
     @Column(nullable = false)
-    private String gender;
+    private Gender gender;
 
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     private Category category;
-
-    @OneToMany(mappedBy = "product", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    private List<Review> reviews = new ArrayList<>();
 
 
 }

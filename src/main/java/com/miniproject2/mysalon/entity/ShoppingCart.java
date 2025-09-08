@@ -23,9 +23,8 @@ public class ShoppingCart {
     @JoinColumn(name = "product_detail_num")
     private ProductDetail productDetail;
 
-    private int quantity;
+    @Column
+    private int count;
 
-    public ShoppingCart() {}
 
-    // getter, setter
 }

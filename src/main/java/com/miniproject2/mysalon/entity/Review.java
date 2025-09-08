@@ -19,11 +19,6 @@ public class Review {
     @Column(name = "review_num")
     private Long reviewNum;
 
-    @Column(nullable = false)
-    private String text;
-
-    @Column(nullable = false)
-    private Short score;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_num")
@@ -32,6 +27,13 @@ public class Review {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "product_detail_num")
     private ProductDetail productDetail;
+
+    @Column(nullable = false)
+    private String text;
+
+    @Column(nullable = false)
+    private Short score;
+
 
     @Column(nullable = true)
     private String reviewImage;
