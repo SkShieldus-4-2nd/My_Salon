@@ -1,6 +1,7 @@
 package com.miniproject2.mysalon.repository;
 
 import com.miniproject2.mysalon.entity.User;
+import jakarta.validation.constraints.NotBlank;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -12,4 +13,6 @@ public interface UserRepository extends JpaRepository<User, Long> {
     Optional<User> findById(String id);
 
     Optional<User> findByUserName(String userName);
+
+    boolean existsById(@NotBlank(message = "아이디는 필수 입력 항목입니다.") String id);
 }
