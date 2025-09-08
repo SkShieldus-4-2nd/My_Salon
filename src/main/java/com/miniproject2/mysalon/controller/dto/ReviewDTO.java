@@ -26,7 +26,6 @@ public class ReviewDTO {
         @NotNull(message = "상품 상세 정보는 필수입니다.")
         private Long productDetailNum;
 
-        @NotBlank(message = "리뷰 내용은 필수입니다.")
         private String text;
 
         @NotNull(message = "평점은 필수입니다.")

@@ -32,7 +32,7 @@ public class Review {
     @JoinColumn(name = "product_detail_num")
     private ProductDetail productDetail;
 
-    @Column(nullable = false)
+
     private String text;
 
     @Column(nullable = false)
