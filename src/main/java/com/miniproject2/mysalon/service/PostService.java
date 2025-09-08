@@ -1,5 +1,6 @@
 package com.miniproject2.mysalon.service;
 
+import com.miniproject2.mysalon.controller.dto.PostDTO;
 import com.miniproject2.mysalon.entity.Post;
 import com.miniproject2.mysalon.entity.User;
 import com.miniproject2.mysalon.repository.PostRepository;
@@ -16,14 +17,16 @@ public class PostService {
     private final PostRepository postRepository;
     private final UserRepository userRepository;
 
-    public Post createPost(Long userNum, String title, String text) {
+    public PostDTO.Response createPost(Long userNum, String title, String text) {
         User user = userRepository.findById(userNum).orElseThrow();
         Post post = Post.builder()
                 .user(user)
                 .title(title)
                 .text(text)
+                .likeCount(0L)
                 .build();
-        return postRepository.save(post);
+        Post saved = postRepository.save(post);
+        return PostDTO.Response.fromEntity(saved);
     }
 
     public void deletePost(Long postNum) {

@@ -1,7 +1,9 @@
 package com.miniproject2.mysalon.controller;
 
+import com.miniproject2.mysalon.controller.dto.CommentDTO;
 import com.miniproject2.mysalon.entity.Comment;
 import com.miniproject2.mysalon.service.CommentService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -13,17 +15,16 @@ public class CommentController {
 
     private final CommentService commentService;
 
-    // 댓글 생성
     @PostMapping
-    public ResponseEntity<Comment> createComment(
-            @RequestParam Long userNum,
-            @RequestParam Long postNum,
-            @RequestParam String text) {
-        Comment comment = commentService.createComment(userNum, postNum, text);
-        return ResponseEntity.ok(comment);
+    public ResponseEntity<CommentDTO.Response> createComment(@RequestBody @Valid CommentDTO.Request request) {
+        CommentDTO.Response response = commentService.createComment(
+                request.getUserNum(),
+                request.getPostNum(),
+                request.getText()
+        );
+        return ResponseEntity.ok(response);
     }
 
-    // 댓글 삭제
     @DeleteMapping("/{commentNum}")
     public ResponseEntity<Void> deleteComment(@PathVariable Long commentNum) {
         commentService.deleteComment(commentNum);

@@ -10,6 +10,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
+
 public class ReviewDTO {
 
     @Data
@@ -41,21 +43,26 @@ public class ReviewDTO {
     @Builder
     public static class Response {
         private Long reviewNum;
-        private String userName;
-        private Long productDetailNum;
+        private Long userNum;
+        private Long productNum;
         private String text;
         private Short score;
         private String reviewImage;
+        private LocalDateTime createdAt;
+        private LocalDateTime updatedAt;
 
         public static Response fromEntity(Review review) {
             return Response.builder()
                     .reviewNum(review.getReviewNum())
-                    .userName(review.getUser().getUserName())
-                    .productDetailNum(review.getProductDetail().getProductDetailNum())
+                    .userNum(review.getUser().getUserNum())
+                    .productNum(review.getProductDetail().getProductDetailNum())
                     .text(review.getText())
                     .score(review.getScore())
                     .reviewImage(review.getReviewImage())
+                    .createdAt(review.getCreatedAt())
+                    .updatedAt(review.getUpdatedAt())
                     .build();
         }
     }
+
 }
