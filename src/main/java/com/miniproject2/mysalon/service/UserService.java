@@ -2,35 +2,57 @@ package com.miniproject2.mysalon.service;
 
 import com.miniproject2.mysalon.controller.dto.UserDTO;
 import com.miniproject2.mysalon.entity.User;
-import com.miniproject2.mysalon.exception.BusinessException;
-import com.miniproject2.mysalon.exception.ErrorCode;
 import com.miniproject2.mysalon.repository.UserRepository;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-@Transactional(readOnly = true)
+@Transactional
 public class UserService {
 
     private final UserRepository userRepository;
 
-    @Transactional
+    // 유저 생성
     public UserDTO.Response createUser(UserDTO.Request request) {
-        if (userRepository.existsById(request.getId())) {
-            throw new BusinessException(ErrorCode.RESOURCE_DUPLICATE, "User","id",request.getId());
-        }
-
         User user = User.builder()
                 .id(request.getId())
+                .password(request.getPassword())
                 .userName(request.getUserName())
+                .profileImage(request.getProfileImage())
+                .tall(request.getTall())
+                .weight(request.getWeight())
+                .type(request.getType())
+                .storeName(request.getStoreName())
                 .build();
 
-        User savedUser = userRepository.save(user);
-        return UserDTO.Response.fromEntity(savedUser);
+        return UserDTO.Response.fromEntity(userRepository.save(user));
+    }
+
+    // 유저 수정
+    public UserDTO.Response editUser(Long userNum, UserDTO.Request request) {
+        User user = userRepository.findById(userNum)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        user.setUserName(request.getUserName());
+        user.setProfileImage(request.getProfileImage());
+        user.setTall(request.getTall());
+        user.setWeight(request.getWeight());
+        user.setType(request.getType());
+        user.setStoreName(request.getStoreName());
+
+        return UserDTO.Response.fromEntity(userRepository.save(user));
+    }
+
+    // 유저 삭제
+    public void deleteUser(Long userNum) {
+        if (!userRepository.existsById(userNum)) {
+            throw new RuntimeException("User not found");
+        }
+        userRepository.deleteById(userNum);
     }
 
     public List<UserDTO.Response> getAllUsers() {
