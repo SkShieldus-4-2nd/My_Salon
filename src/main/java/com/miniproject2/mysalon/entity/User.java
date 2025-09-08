@@ -51,6 +51,10 @@ public class User {
     @Enumerated(EnumType.STRING) // 중요!
     private UserType type;
 
+    @Column(nullable = true)
+    private String storeName;
+
+
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<Post> posts = new ArrayList<>();
 
