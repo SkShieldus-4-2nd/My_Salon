@@ -26,5 +26,8 @@ public class ShoppingCart {
     @Column
     private int count;
 
+    @Column(nullable = false)
+    private boolean isSelected = true;
+
 
 }

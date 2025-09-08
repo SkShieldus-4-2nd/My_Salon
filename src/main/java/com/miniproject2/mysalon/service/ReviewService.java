@@ -1,38 +1,50 @@
 package com.miniproject2.mysalon.service;
 
-import com.miniproject2.mysalon.entity.*;
+import com.miniproject2.mysalon.controller.dto.ReviewDTO;
+import com.miniproject2.mysalon.entity.ProductDetail;
+import com.miniproject2.mysalon.entity.Review;
+import com.miniproject2.mysalon.entity.User;
 import com.miniproject2.mysalon.repository.ProductDetailRepository;
-import com.miniproject2.mysalon.repository.ProductRepository;
 import com.miniproject2.mysalon.repository.ReviewRepository;
 import com.miniproject2.mysalon.repository.UserRepository;
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
-@Transactional
+@Transactional(readOnly = true)
 public class ReviewService {
 
     private final ReviewRepository reviewRepository;
     private final UserRepository userRepository;
     private final ProductDetailRepository productDetailRepository;
 
-    public Review createReview(Long userNum, Long productDetailNum, String text, Short score, String reviewImage) {
-        User user = userRepository.findById(userNum).orElseThrow();
-        ProductDetail productDetail = productDetailRepository.findById(productDetailNum).orElseThrow();
+    @Transactional
+    public Long createReview(ReviewDTO.Request request) {
+        User user = userRepository.findById(request.getUserNum())
+                .orElseThrow(() -> new IllegalArgumentException("User not found"));
+        ProductDetail productDetail = productDetailRepository.findById(request.getProductDetailNum())
+                .orElseThrow(() -> new IllegalArgumentException("Product detail not found"));
 
         Review review = Review.builder()
                 .user(user)
                 .productDetail(productDetail)
-                .text(text)
-                .score(score)
-                .reviewImage(reviewImage)
+                .text(request.getText())
+                .score(request.getScore())
+                .reviewImage(request.getReviewImage())
                 .build();
-        return reviewRepository.save(review);
+
+        Review savedReview = reviewRepository.save(review);
+        return savedReview.getReviewNum();
     }
 
-    public void deleteReview(Long reviewNum) {
-        reviewRepository.deleteById(reviewNum);
+    @Transactional(readOnly = true)
+    public ReviewDTO.Response getReviewById(Long reviewNum) {
+        Review review = reviewRepository.findById(reviewNum)
+                .orElseThrow(() -> new IllegalArgumentException("Review not found"));
+        return ReviewDTO.Response.fromEntity(review);
     }
+
+
 }

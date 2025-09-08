@@ -19,8 +19,9 @@ public class ReviewController {
     public ResponseEntity<Long> createReview(@Valid @RequestBody ReviewDTO.Request request) {
         return ResponseEntity.ok(reviewService.createReview(request));
     }
+
     @GetMapping("/{id}")
     public ResponseEntity<ReviewDTO.Response> getReview(@PathVariable Long id) {
-        return ResponseEntity.ok(reviewService.);
+        return ResponseEntity.ok(reviewService.getReviewById(id));
     }
 }
