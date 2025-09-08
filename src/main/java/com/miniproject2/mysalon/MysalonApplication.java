@@ -7,7 +7,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 public class MysalonApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(MysalonApplication.class, args);
+        SpringApplication.run(MysalonApplication.class, args);
 	}
 
 }
