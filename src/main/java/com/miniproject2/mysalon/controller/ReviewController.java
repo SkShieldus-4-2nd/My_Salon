@@ -16,12 +16,14 @@ public class ReviewController {
     private final ReviewService reviewService;
 
     @PostMapping
-    public ResponseEntity<Long> createReview(@Valid @RequestBody ReviewDTO.Request request) {
-        return ResponseEntity.ok(reviewService.createReview(request));
+    public ResponseEntity<ReviewDTO.Response> createReview(@RequestBody @Valid ReviewDTO.Request request) {
+        ReviewDTO.Response response = reviewService.createReview(request);
+        return ResponseEntity.ok(response);
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<ReviewDTO.Response> getReview(@PathVariable Long id) {
-        return ResponseEntity.ok(reviewService.getReviewById(id));
+    @GetMapping("/{reviewNum}")
+    public ResponseEntity<ReviewDTO.Response> getReview(@PathVariable Long reviewNum) {
+        ReviewDTO.Response response = reviewService.getReview(reviewNum);
+        return ResponseEntity.ok(response);
     }
 }

@@ -21,7 +21,7 @@ public class ReviewService {
     private final ProductDetailRepository productDetailRepository;
 
     @Transactional
-    public Long createReview(ReviewDTO.Request request) {
+    public ReviewDTO.Response createReview(ReviewDTO.Request request) {
         User user = userRepository.findById(request.getUserNum())
                 .orElseThrow(() -> new IllegalArgumentException("User not found"));
         ProductDetail productDetail = productDetailRepository.findById(request.getProductDetailNum())
@@ -36,11 +36,11 @@ public class ReviewService {
                 .build();
 
         Review savedReview = reviewRepository.save(review);
-        return savedReview.getReviewNum();
+        return ReviewDTO.Response.fromEntity(savedReview);
     }
 
     @Transactional(readOnly = true)
-    public ReviewDTO.Response getReviewById(Long reviewNum) {
+    public ReviewDTO.Response getReview(Long reviewNum) {
         Review review = reviewRepository.findById(reviewNum)
                 .orElseThrow(() -> new IllegalArgumentException("Review not found"));
         return ReviewDTO.Response.fromEntity(review);

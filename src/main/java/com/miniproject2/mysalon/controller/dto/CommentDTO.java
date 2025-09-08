@@ -5,6 +5,8 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
+import java.time.LocalDateTime;
+
 public class CommentDTO {
 
     @Data
@@ -32,6 +34,8 @@ public class CommentDTO {
         private Long userNum;
         private Long postNum;
         private String text;
+        private LocalDateTime createdAt;
+        private LocalDateTime updatedAt;
 
         public static Response fromEntity(Comment comment) {
             return Response.builder()
@@ -39,6 +43,8 @@ public class CommentDTO {
                     .userNum(comment.getUser().getUserNum())
                     .postNum(comment.getPost().getPostNum())
                     .text(comment.getText())
+                    .createdAt(comment.getCreatedAt())
+                    .updatedAt(comment.getUpdatedAt())
                     .build();
         }
     }

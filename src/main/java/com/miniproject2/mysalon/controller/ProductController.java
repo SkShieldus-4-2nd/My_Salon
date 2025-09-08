@@ -23,4 +23,5 @@ public class ProductController {
     public ResponseEntity<ProductDTO.Response> getProduct(@PathVariable Long id) {
         return ResponseEntity.ok(productService.getProductById(id));
     }
+
 }

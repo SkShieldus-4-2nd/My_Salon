@@ -5,6 +5,8 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
+import java.time.LocalDateTime;
+
 public class PostDTO {
 
     @Data
@@ -36,6 +38,8 @@ public class PostDTO {
         private String text;
         private Long likeCount;
         private String image;
+        private LocalDateTime createdAt;
+        private LocalDateTime updatedAt;
 
         public static Response fromEntity(Post post) {
             return Response.builder()
@@ -45,7 +49,10 @@ public class PostDTO {
                     .text(post.getText())
                     .likeCount(post.getLikeCount())
                     .image(post.getImage())
+                    .createdAt(post.getCreatedAt())
+                    .updatedAt(post.getUpdatedAt())
                     .build();
         }
     }
+
 }
