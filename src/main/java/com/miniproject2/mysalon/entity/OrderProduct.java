@@ -28,4 +28,10 @@ public class OrderProduct {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "order_num")
     private Order order;
+
+    //주문/배송 현황
+    @Column
+    @Enumerated(EnumType.STRING)  // enum 값을 문자열로 저장
+    private OrderStatus orderStatus;
+
 }

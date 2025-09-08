@@ -1,11 +1,15 @@
 package com.miniproject2.mysalon.entity;
 
 import jakarta.persistence.Embeddable;
+import lombok.Getter;
+import lombok.Setter;
+
 import java.io.Serializable;
 
 @Embeddable
 public class ShoppingCartKey implements Serializable {
-
+    @Getter
+    @Setter
     private Long userNum;
     private Long productDetailNum;
 
