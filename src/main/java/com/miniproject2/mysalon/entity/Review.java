@@ -25,8 +25,8 @@ public class Review {
     private User user;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "product_detail_num")
-    private ProductDetail productDetail;
+    @JoinColumn(name = "product_num")
+    private Product product;
 
     @Column(nullable = false)
     private String text;
