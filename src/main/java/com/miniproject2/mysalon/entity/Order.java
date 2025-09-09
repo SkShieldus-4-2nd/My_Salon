@@ -25,8 +25,6 @@ public class Order {
     @Column(name = "order_num")
     private Long orderNum;
 
-    @Column(nullable = false)
-    private Long totalPrice;
 
     @CreationTimestamp
     @Column(name = "ordered_at", updatable = false)
