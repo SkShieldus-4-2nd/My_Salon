@@ -65,16 +65,18 @@ public class ReviewController {
         );
     }
 
-    //키 몸무게로 리뷰 서치
-    @GetMapping("/filter-by-spec")
-    public ResponseEntity<List<ReviewDTO.Response>> getReviewsByUserSpec(
+    @GetMapping("/filter-by-spec/product/{productDetailNum}")
+    public ResponseEntity<List<ReviewDTO.Response>> getReviewsByUserSpecForProduct(
+            @PathVariable Long productDetailNum,
             @RequestParam Short tall,
             @RequestParam Short weight,
-            @RequestParam(defaultValue = "3") Short tallRange,   // 기본 ±5cm
-            @RequestParam(defaultValue = "3") Short weightRange  // 기본 ±5kg
+            @RequestParam(defaultValue = "3") Short tallRange,
+            @RequestParam(defaultValue = "3") Short weightRange
     ) {
-        List<ReviewDTO.Response> filteredReviews = reviewService.getReviewsByUserSpec(tall, weight, tallRange, weightRange);
+        List<ReviewDTO.Response> filteredReviews = reviewService
+                .getReviewsByUserSpecForProduct(productDetailNum, tall, weight, tallRange, weightRange);
         return ResponseEntity.ok(filteredReviews);
     }
+
 
 }
