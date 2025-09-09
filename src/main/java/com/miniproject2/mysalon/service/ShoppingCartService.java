@@ -21,7 +21,7 @@ public class ShoppingCartService {
     private final UserRepository userRepository;
     private final ProductDetailRepository productDetailRepository;
 
-    // 장바구니 추가
+    // 장바구니 물건 추가
     public ShoppingCart addToCart(ShoppingCartDTO.Request request) {
         User user = userRepository.findById(request.getUserNum()).orElseThrow();
         ProductDetail productDetail = productDetailRepository.findById(request.getProductDetailNum()).orElseThrow();
@@ -36,15 +36,51 @@ public class ShoppingCartService {
         return shoppingCartRepository.save(cart);
     }
 
-    // 장바구니 삭제
+    // 장바구니 물건 삭제
     public void removeFromCart(ShoppingCartDTO.Request request) {
         ShoppingCartKey key = new ShoppingCartKey(request.getUserNum(), request.getProductDetailNum());
         shoppingCartRepository.deleteById(key);
     }
 
+    //유저 장바구니 로드
     @Transactional(readOnly = true)
     public List<ShoppingCart> getUserCart(Long userNum) {
         User user = userRepository.findById(userNum).orElseThrow();
         return shoppingCartRepository.findByUser(user);
+    }
+
+    //장바구니 선택 변경
+    @Transactional
+    public ShoppingCart updateSelection(Long userNum, Long productDetailNum, boolean isSelected) {
+        ShoppingCartKey key = new ShoppingCartKey(userNum, productDetailNum);
+        ShoppingCart cart = shoppingCartRepository.findById(key)
+                .orElseThrow(() -> new RuntimeException("Cart item not found"));
+
+        cart.setSelected(isSelected);
+        return shoppingCartRepository.save(cart);
+    }
+
+    //종합 가격 계산
+    @Transactional(readOnly = true)
+    public Long calculateTotalPrice(Long userNum) {
+        User user = userRepository.findById(userNum)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        List<ShoppingCart> cartItems = shoppingCartRepository.findByUser(user);
+
+        return cartItems.stream()
+                .filter(ShoppingCart::isSelected) // 선택된 상품만
+                .mapToLong(item -> item.getProductDetail().getProduct().getPrice() * item.getCount())
+                .sum();
+    }
+
+    //개수 변경
+    public ShoppingCart updateItemCount(Long userNum, Long productDetailNum, int count) {
+        ShoppingCartKey key = new ShoppingCartKey(userNum, productDetailNum);
+        ShoppingCart cart = shoppingCartRepository.findById(key)
+                .orElseThrow(() -> new RuntimeException("Cart item not found"));
+
+        cart.setCount(count);
+        return shoppingCartRepository.save(cart);
     }
 }
