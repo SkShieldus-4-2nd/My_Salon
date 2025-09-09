@@ -4,7 +4,6 @@ import com.miniproject2.mysalon.controller.dto.UserDTO;
 import com.miniproject2.mysalon.service.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -17,16 +16,31 @@ public class UserController {
 
     private final UserService userService;
 
-    @GetMapping
-    public ResponseEntity<List<UserDTO.Response>> getAllUsers() {
-        List<UserDTO.Response> users = userService.getAllUsers();
-        return ResponseEntity.ok(users);
-    }
-
+    // ✅ 유저 생성
     @PostMapping
     public ResponseEntity<UserDTO.Response> createUser(@Valid @RequestBody UserDTO.Request request) {
+        return ResponseEntity.ok(userService.createUser(request));
+    }
 
-        UserDTO.Response createdUser = userService.createUser(request);
-        return new ResponseEntity<>(createdUser, HttpStatus.CREATED);
+    // ✅ 유저 수정
+    @PutMapping("/{userNum}")
+    public ResponseEntity<UserDTO.Response> editUser(
+            @PathVariable Long userNum,
+            @Valid @RequestBody UserDTO.Request request
+    ) {
+        return ResponseEntity.ok(userService.editUser(userNum, request));
+    }
+
+    // ✅ 유저 삭제
+    @DeleteMapping("/{userNum}")
+    public ResponseEntity<Void> deleteUser(@PathVariable Long userNum) {
+        userService.deleteUser(userNum);
+        return ResponseEntity.noContent().build();
+    }
+
+    // ✅ 모든 유저 조회
+    @GetMapping
+    public ResponseEntity<List<UserDTO.Response>> getAllUsers() {
+        return ResponseEntity.ok(userService.getAllUsers());
     }
 }

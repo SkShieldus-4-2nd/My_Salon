@@ -1,12 +1,13 @@
 package com.miniproject2.mysalon.controller;
 
-import com.miniproject2.mysalon.entity.Favorite;
+import com.miniproject2.mysalon.controller.dto.FavoriteDTO;
 import com.miniproject2.mysalon.service.FavoriteService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/favorites")
@@ -15,28 +16,27 @@ public class FavoriteController {
 
     private final FavoriteService favoriteService;
 
-    // 1. 상품 찜 추가
+    // 찜 추가
     @PostMapping
-    public ResponseEntity<Favorite> addFavorite(
-            @RequestParam Long userNum,
-            @RequestParam Long productId) {
-        Favorite favorite = favoriteService.addFavorite(userNum, productId);
-        return ResponseEntity.ok(favorite);
+    public ResponseEntity<FavoriteDTO.Response> addFavorite(@RequestBody FavoriteDTO.Request request) {
+        FavoriteDTO.Response response = favoriteService.addFavorite(request);
+        return ResponseEntity.ok(response);
     }
 
-    // 2. 상품 찜 해제
+    // 찜 삭제
     @DeleteMapping
-    public ResponseEntity<Void> removeFavorite(
-            @RequestParam Long userNum,
-            @RequestParam Long productId) {
-        favoriteService.removeFavorite(userNum, productId);
+    public ResponseEntity<Void> removeFavorite(@RequestBody FavoriteDTO.Request request) {
+        favoriteService.removeFavorite(request);
         return ResponseEntity.noContent().build();
     }
 
-    // 3. 유저별 찜 목록 조회
-    @GetMapping("/user/{userNum}")
-    public ResponseEntity<List<Favorite>> getUserFavorites(@PathVariable Long userNum) {
-        List<Favorite> favorites = favoriteService.getUserFavorites(userNum);
+    // 유저별 찜 목록 조회
+    @GetMapping("/{userNum}")
+    public ResponseEntity<List<FavoriteDTO.Response>> getUserFavorites(@PathVariable Long userNum) {
+        List<FavoriteDTO.Response> favorites = favoriteService.getUserFavorites(userNum)
+                .stream()
+                .map(FavoriteDTO.Response::fromEntity)
+                .collect(Collectors.toList());
         return ResponseEntity.ok(favorites);
     }
 }
