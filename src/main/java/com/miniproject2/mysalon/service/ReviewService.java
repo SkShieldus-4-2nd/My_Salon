@@ -103,14 +103,17 @@ public class ReviewService {
                 .collect(Collectors.toList());
     }
 
-    //키 몸무게로 리뷰 서치
     @Transactional(readOnly = true)
-    public List<ReviewDTO.Response> getReviewsByUserSpec(Short targetTall, Short targetWeight, Short tallRange, Short weightRange) {
-        // 모든 리뷰 조회
-        List<Review> allReviews = reviewRepository.findAll();
+    public List<ReviewDTO.Response> getReviewsByUserSpecForProduct(Long productDetailNum,
+                                                                   Short targetTall,
+                                                                   Short targetWeight,
+                                                                   Short tallRange,
+                                                                   Short weightRange) {
+        // 해당 상품의 리뷰만 조회
+        List<Review> productReviews = reviewRepository.findByProductDetail_ProductDetailNum(productDetailNum);
 
-        // 조건에 맞는 리뷰만 필터링
-        return allReviews.stream()
+        // 키/몸무게 조건 필터링
+        return productReviews.stream()
                 .filter(r -> {
                     Short userTall = r.getUser().getTall();
                     Short userWeight = r.getUser().getWeight();
@@ -121,6 +124,7 @@ public class ReviewService {
                 .map(ReviewDTO.Response::fromEntity)
                 .collect(Collectors.toList());
     }
+
 }
 
 
