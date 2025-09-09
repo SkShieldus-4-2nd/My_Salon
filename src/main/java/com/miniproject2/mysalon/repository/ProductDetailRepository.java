@@ -11,4 +11,12 @@ import java.util.List;
 public interface ProductDetailRepository extends JpaRepository<ProductDetail, Long> {
 
     List<ProductDetail> findByProduct(Product product);
+
+    List<ProductDetail> findByProduct_ProductNum(Long productNum);
+
+    List<ProductDetail> findByProduct_User_UserNum(Long userNum);
+
+    List<ProductDetail> findByColor(String color);
+
+    List<ProductDetail> findByColorAndSize(String color, String size);
 }

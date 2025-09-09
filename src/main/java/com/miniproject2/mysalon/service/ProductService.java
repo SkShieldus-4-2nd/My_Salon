@@ -15,7 +15,6 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -32,7 +31,7 @@ public class ProductService {
     private Product toEntity(ProductDTO dto, User user) {
         Product product = Product.builder()
                 .productNum(dto.getProductNum())
-                .userNum(user)
+                .user(user) // userNum -> user
                 .productName(dto.getProductName())
                 .price(dto.getPrice())
                 .mainImage(dto.getMainImage())
@@ -66,7 +65,7 @@ public class ProductService {
     private ProductDTO toDTO(Product product) {
         return ProductDTO.builder()
                 .productNum(product.getProductNum())
-                .userNum(product.getUserNum().getUserNum())
+                .userNum(product.getUser().getUserNum()) // getUserNum() -> getUser().getUserNum()
                 .productName(product.getProductName())
                 .price(product.getPrice())
                 .mainImage(product.getMainImage())
@@ -81,6 +80,7 @@ public class ProductService {
     private ProductDetailDTO toDTO(ProductDetail productDetail) {
         return ProductDetailDTO.builder()
                 .productDetailNum(productDetail.getProductDetailNum())
+                .productNum(productDetail.getProduct().getProductNum())
                 .size(productDetail.getSize())
                 .color(productDetail.getColor())
                 .count(productDetail.getCount())
@@ -113,7 +113,7 @@ public class ProductService {
             // Full update
             User user = userRepository.findById(productDTO.getUserNum())
                     .orElseThrow(() -> new EntityNotFoundException("User", productDTO.getUserNum()));
-            existingProduct.setUserNum(user);
+            existingProduct.setUser(user); // setUserNum -> setUser
             existingProduct.setProductName(productDTO.getProductName());
             existingProduct.setPrice(productDTO.getPrice());
             existingProduct.setMainImage(productDTO.getMainImage());
@@ -174,7 +174,7 @@ public class ProductService {
     public List<ProductDTO> searchProductsByUserNum(Long userNum) {
         User user = userRepository.findById(userNum)
                 .orElseThrow(() -> new EntityNotFoundException("User", userNum));
-        return productRepository.findByUserNum(user).stream().map(this::toDTO).collect(Collectors.toList());
+        return productRepository.findByUser(user).stream().map(this::toDTO).collect(Collectors.toList());
     }
 
     public List<ProductDTO> getAllProducts() {
