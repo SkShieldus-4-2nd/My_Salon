@@ -30,4 +30,6 @@ public class PostController {
         postService.deletePost(postNum);
         return ResponseEntity.noContent().build();
     }
+
+
 }
