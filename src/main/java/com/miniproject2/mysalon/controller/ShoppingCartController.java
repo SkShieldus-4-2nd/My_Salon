@@ -42,4 +42,32 @@ public class ShoppingCartController {
                 .toList();
         return ResponseEntity.ok(responses);
     }
+
+    // 4. 장바구니 물건 체크 변경 기능
+    @PatchMapping("/selection")
+    public ResponseEntity<ShoppingCart> updateCartSelection(
+            @RequestParam Long userNum,
+            @RequestParam Long productDetailNum,
+            @RequestParam boolean isSelected) {
+        ShoppingCart updatedCart = shoppingCartService.updateSelection(userNum, productDetailNum, isSelected);
+        return ResponseEntity.ok(updatedCart);
+    }
+
+    // 5. 장바구니에서 선택된 물건들의 총 가격 표시
+    @GetMapping("/total")
+    public ResponseEntity<Long> getTotalPrice(@RequestParam Long userNum) {
+        Long totalPrice = shoppingCartService.calculateTotalPrice(userNum);
+        return ResponseEntity.ok(totalPrice);
+    }
+
+    @PatchMapping("/update-count")
+    public ResponseEntity<ShoppingCart> updateItemCount(
+            @RequestParam Long userNum,
+            @RequestParam Long productDetailNum,
+            @RequestParam int count) {
+
+        ShoppingCart updatedCart = shoppingCartService.updateItemCount(userNum, productDetailNum, count);
+        return ResponseEntity.ok(updatedCart);
+    }
+
 }

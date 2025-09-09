@@ -3,9 +3,10 @@ package com.miniproject2.mysalon.service;
 import com.miniproject2.mysalon.controller.dto.UserDTO;
 import com.miniproject2.mysalon.entity.User;
 import com.miniproject2.mysalon.repository.UserRepository;
-import jakarta.transaction.Transactional;
+
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -61,5 +62,12 @@ public class UserService {
                 .stream()
                 .map(UserDTO.Response::fromEntity)
                 .toList();
+    }
+
+    @Transactional(readOnly = true)
+    public UserDTO.Response getUserByUserNum(Long userNum) {
+        User user = userRepository.findById(userNum)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+        return UserDTO.Response.fromEntity(user);
     }
 }

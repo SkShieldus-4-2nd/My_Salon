@@ -43,4 +43,11 @@ public class UserController {
     public ResponseEntity<List<UserDTO.Response>> getAllUsers() {
         return ResponseEntity.ok(userService.getAllUsers());
     }
+
+    // ✅ 유저 넘으로 유저 조회
+    @GetMapping("/{userNum}")
+    public ResponseEntity<UserDTO.Response> getUserByUserNum(@PathVariable Long userNum) {
+        UserDTO.Response userResponse = userService.getUserByUserNum(userNum);
+        return ResponseEntity.ok(userResponse);
+    }
 }
