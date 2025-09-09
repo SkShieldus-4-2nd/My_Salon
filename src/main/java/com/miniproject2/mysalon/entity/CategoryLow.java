@@ -17,6 +17,7 @@ public enum CategoryLow {
     PAJAMAS, UNDERWEAR,
 
     //KIDS
-    TOPS, BOTTOMS
-
+    TOPS, BOTTOMS,
+    //all
+    ALL
     }

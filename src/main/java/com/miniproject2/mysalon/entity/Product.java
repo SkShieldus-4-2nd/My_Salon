@@ -25,6 +25,10 @@ public class Product {
     @Column(name = "product_num")
     private Long productNum;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_num")
+    private User userNum;
+
     @Column(nullable = false)
     private String productName;
 
@@ -39,6 +43,7 @@ public class Product {
 
 
     @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
     private Gender gender;
 
     @Column(nullable = false)
