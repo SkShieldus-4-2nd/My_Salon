@@ -20,8 +20,11 @@ public enum ErrorCode {
     // 비즈니스 로직 관련 (40X)
     BUSINESS_RULE_VIOLATION("BIZ_001", "비즈니스 규칙 위반입니다", HttpStatus.BAD_REQUEST),
     OPERATION_NOT_ALLOWED("BIZ_002", "허용되지 않은 작업입니다", HttpStatus.BAD_REQUEST),
-    USER_NOT_FOUND("BIZ_003", "사용자를 찾을 수 없습니다", HttpStatus.NOT_FOUND),
+    //사용자 관련
+    USER_NOT_FOUND("USER_001","사용자를 찾을 수 없습니다.", HttpStatus.NOT_FOUND),
+
     PRODUCT_NOT_FOUND("BIZ_004", "상품을 찾을 수 없습니다", HttpStatus.NOT_FOUND),
+
 
 
     // 서버 오류 (50X)

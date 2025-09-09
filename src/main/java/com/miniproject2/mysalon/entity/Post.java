@@ -31,8 +31,11 @@ public class Post {
     @Column(nullable = false)
     private String text;
 
-    @Column(nullable = false)
+    @Column(nullable = true)
     private Long likeCount;
+
+    @Column(nullable = false)
+    private PostType postType;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_num")
