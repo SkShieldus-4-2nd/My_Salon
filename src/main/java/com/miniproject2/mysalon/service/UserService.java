@@ -55,6 +55,7 @@ public class UserService {
         userRepository.deleteById(userNum);
     }
 
+
     public List<UserDTO.Response> getAllUsers() {
         return userRepository.findAll()
                 .stream()
