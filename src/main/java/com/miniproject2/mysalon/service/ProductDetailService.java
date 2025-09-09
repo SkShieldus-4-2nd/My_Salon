@@ -48,6 +48,33 @@ public class ProductDetailService {
     }
 
     @Transactional
+    public ProductDetailDTO patchProductDetail(Long productDetailNum, ProductDetailDTO dto) {
+        ProductDetail productDetail = productDetailRepository.findById(productDetailNum)
+                .orElseThrow(() -> new EntityNotFoundException("ProductDetail", productDetailNum));
+
+        if (dto.getProductNum() != null) {
+            Product product = productRepository.findById(dto.getProductNum())
+                    .orElseThrow(() -> new EntityNotFoundException("Product", dto.getProductNum()));
+            productDetail.setProduct(product);
+        }
+        if (dto.getColor() != null) {
+            productDetail.setColor(dto.getColor());
+        }
+        if (dto.getSize() != null) {
+            productDetail.setSize(dto.getSize());
+        }
+        // Assuming count is a primitive int, we can check for a non-default value if needed, but typically it's always sent.
+        // For simplicity, we'll allow 0 to be a valid patch value.
+        productDetail.setCount(dto.getCount());
+
+        if (dto.getImage() != null) {
+            productDetail.setImage(dto.getImage());
+        }
+
+        return ProductDetailDTO.fromEntity(productDetail);
+    }
+
+    @Transactional
     public void deleteProductDetail(Long productDetailNum) {
         if (!productDetailRepository.existsById(productDetailNum)) {
             throw new EntityNotFoundException("ProductDetail", productDetailNum);

@@ -35,6 +35,12 @@ public class ProductDetailController {
         return ResponseEntity.ok(updatedDto);
     }
 
+    @PatchMapping("/{productDetailNum}")
+    public ResponseEntity<ProductDetailDTO> patchProductDetail(@PathVariable Long productDetailNum, @RequestBody ProductDetailDTO dto) {
+        ProductDetailDTO patchedDto = productDetailService.patchProductDetail(productDetailNum, dto);
+        return ResponseEntity.ok(patchedDto);
+    }
+
     @DeleteMapping("/{productDetailNum}")
     public ResponseEntity<Void> deleteProductDetail(@PathVariable Long productDetailNum) {
         productDetailService.deleteProductDetail(productDetailNum);
