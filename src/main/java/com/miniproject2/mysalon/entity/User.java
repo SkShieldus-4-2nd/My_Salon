@@ -46,7 +46,6 @@ public class User {
     @Column(unique = true, nullable = false)
     private String userName;
 
-
     //프로필 이미지
     @Column
     private String profileImage;

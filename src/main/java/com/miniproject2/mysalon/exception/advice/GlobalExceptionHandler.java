@@ -1,7 +1,9 @@
 package com.miniproject2.mysalon.exception.advice;
 
 
+import com.miniproject2.mysalon.exception.BusinessException;
 import com.miniproject2.mysalon.exception.EntityNotFoundException;
+import com.miniproject2.mysalon.exception.ErrorCode;
 import com.miniproject2.mysalon.exception.ValidationException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
