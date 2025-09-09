@@ -22,6 +22,11 @@ public enum ErrorCode {
     OPERATION_NOT_ALLOWED("BIZ_002", "허용되지 않은 작업입니다", HttpStatus.BAD_REQUEST),
     //사용자 관련
     USER_NOT_FOUND("USER_001","사용자를 찾을 수 없습니다.", HttpStatus.NOT_FOUND),
+
+    PRODUCT_NOT_FOUND("BIZ_004", "상품을 찾을 수 없습니다", HttpStatus.NOT_FOUND),
+
+
+
     // 서버 오류 (50X)
     INTERNAL_SERVER_ERROR("SERVER_001", "서버 내부 오류가 발생했습니다", HttpStatus.INTERNAL_SERVER_ERROR),
     DATABASE_ERROR("SERVER_002", "데이터베이스 오류가 발생했습니다", HttpStatus.INTERNAL_SERVER_ERROR),

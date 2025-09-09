@@ -39,7 +39,7 @@ public class Order {
 
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
     @Builder.Default
-    private List<OrderProduct> orderProducts = new ArrayList<>();
+    private List<OrderDetail> orderProducts = new ArrayList<>();
 
 
 

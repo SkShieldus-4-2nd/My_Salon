@@ -20,5 +20,5 @@ public interface ProductRepository extends JpaRepository<Product, Long>, JpaSpec
 
     List<Product> findByCategoryAndCategoryLow(Category category, CategoryLow categoryLow);
 
-    List<Product> findByUserNum(User user);
+    List<Product> findByUser(User user);
 }

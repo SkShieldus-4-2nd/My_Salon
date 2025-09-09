@@ -7,12 +7,12 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Table(name = "order_products")
+@Table(name = "order-details")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class OrderProduct {
+public class OrderDetail{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "order_product_num")

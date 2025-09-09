@@ -34,6 +34,9 @@ public class User {
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<Order> orders = new ArrayList<>();
 
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Product> products = new ArrayList<>();
+
     //아이디
     @Column(unique = true, nullable = false)
     private String id;
@@ -45,7 +48,6 @@ public class User {
     //닉네임
     @Column(unique = true, nullable = false)
     private String userName;
-
 
     //프로필 이미지
     @Column
