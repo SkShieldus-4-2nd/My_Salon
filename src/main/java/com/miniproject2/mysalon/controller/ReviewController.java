@@ -46,36 +46,67 @@ public class ReviewController {
         return ResponseEntity.ok(reviews);
     }
 
-    // 상품 디테일 기준 리뷰 전체 조회
-    @GetMapping("/product/{productDetailNum}")
-    public ResponseEntity<List<ReviewDTO.Response>> getReviewsByProductDetail(
-            @PathVariable Long productDetailNum) {
+    // 상품 기준 리뷰 전체 조회
+    @GetMapping("/product/{productNum}")
+    public ResponseEntity<List<ReviewDTO.Response>> getReviewsByProduct(
+            @PathVariable Long productNum) {
         return ResponseEntity.ok(
-                reviewService.getAllReviewsByProductDetailNum(productDetailNum)
+                reviewService.getAllReviewsByProductNum(productNum)
         );
     }
 
-    //해당 상품의 유저 본인의 리뷰 로드
-    @GetMapping("/user/{userNum}/product/{productDetailNum}")
+    // 해당 상품에서 유저 본인의 리뷰 로드
+    @GetMapping("/user/{userNum}/product/{productNum}")
     public ResponseEntity<List<ReviewDTO.Response>> getUserReviewsForProduct(
             @PathVariable Long userNum,
-            @PathVariable Long productDetailNum) {
+            @PathVariable Long productNum) {
         return ResponseEntity.ok(
-                reviewService.getUserReviewsByProductDetail(userNum, productDetailNum)
+                reviewService.getUserReviewsByProduct(userNum, productNum)
         );
     }
 
-    @GetMapping("/filter-by-spec/product/{productDetailNum}")
+    // 유저 스펙 기반 특정 상품 리뷰 조회
+    @GetMapping("/filter-by-spec/product/{productNum}")
     public ResponseEntity<List<ReviewDTO.Response>> getReviewsByUserSpecForProduct(
-            @PathVariable Long productDetailNum,
+            @PathVariable Long productNum,
             @RequestParam Short tall,
             @RequestParam Short weight,
             @RequestParam(defaultValue = "3") Short tallRange,
             @RequestParam(defaultValue = "3") Short weightRange
     ) {
         List<ReviewDTO.Response> filteredReviews = reviewService
-                .getReviewsByUserSpecForProduct(productDetailNum, tall, weight, tallRange, weightRange);
+                .getReviewsByUserSpecForProduct(productNum, tall, weight, tallRange, weightRange);
         return ResponseEntity.ok(filteredReviews);
+    }
+
+    //별점 기준 조회 같은 별점 내에서는 최신순
+    @GetMapping("/product/{productNum}/by-score")
+    public ResponseEntity<List<ReviewDTO.Response>> getReviewsByProductSortedByScore(
+            @PathVariable Long productNum) {
+        return ResponseEntity.ok(
+                reviewService.getReviewsByProductSortedByScore(productNum)
+        );
+    }
+
+    //제품 평점 조회
+    @GetMapping("/product/{productNum}/average-score")
+    public ResponseEntity<Double> getAverageScore(@PathVariable Long productNum) {
+        Double averageScore = reviewService.getAverageScoreByProductNum(productNum);
+        return ResponseEntity.ok(averageScore);
+    }
+
+    // 유저 본인이 작성한 리뷰 개수 조회
+    @GetMapping("/user/{userNum}/count")
+    public ResponseEntity<Long> getUserReviewCount(@PathVariable Long userNum) {
+        Long count = reviewService.getUserReviewCount(userNum);
+        return ResponseEntity.ok(count);
+    }
+
+    // 특정 상품(Product) 리뷰 개수 조회
+    @GetMapping("/product/{productNum}/count")
+    public ResponseEntity<Long> getProductReviewCount(@PathVariable Long productNum) {
+        Long count = reviewService.getProductReviewCount(productNum);
+        return ResponseEntity.ok(count);
     }
 
 

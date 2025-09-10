@@ -23,9 +23,11 @@ public class UserService {
                 .id(request.getId())
                 .password(request.getPassword())
                 .userName(request.getUserName())
+                .secondPassword(request.getSecondPassword())
                 .profileImage(request.getProfileImage())
                 .tall(request.getTall())
                 .weight(request.getWeight())
+                .createdAt(request.getCreatedAt())
                 .type(request.getType())
                 .storeName(request.getStoreName())
                 .build();
@@ -40,8 +42,10 @@ public class UserService {
 
         user.setUserName(request.getUserName());
         user.setProfileImage(request.getProfileImage());
+        user.setSecondPassword(request.getSecondPassword());
         user.setTall(request.getTall());
         user.setWeight(request.getWeight());
+        user.setCreatedAt(request.getCreatedAt());
         user.setType(request.getType());
         user.setStoreName(request.getStoreName());
 
