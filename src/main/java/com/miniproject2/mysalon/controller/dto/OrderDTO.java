@@ -53,7 +53,7 @@ public class OrderDTO {
                     .orderNum(order.getOrderNum())
                     .userNum(order.getUser().getUserNum())
                     .orderedAt(order.getOrderedAt())
-                    .orderStatus(order.getOrderStatus())
+                    .orderStatus(order.getStatus())
                     .orderDetails(order.getOrderProducts().stream()
                             .map(OrderDetailResponse::fromEntity)
                             .collect(Collectors.toList()))

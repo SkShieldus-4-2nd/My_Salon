@@ -34,7 +34,7 @@ public class OrderService {
         Order order = Order.builder()
                 .user(user)
                 .orderedAt(LocalDateTime.now())
-                .orderStatus(OrderStatus.ORDERED)
+                .status(OrderStatus.ORDERED)
                 .orderProducts(new ArrayList<>()) // 초기화
                 .build();
 
@@ -70,7 +70,7 @@ public class OrderService {
     public Order updateOrder(Long orderId, OrderDTO.UpdateOrderRequest request) {
         Order order = orderRepository.findById(orderId)
                 .orElseThrow(() -> new EntityNotFoundException("Order not found"));
-        order.setOrderStatus(request.getOrderStatus());
+        order.setStatus(request.getOrderStatus());
         return orderRepository.save(order);
     }
 

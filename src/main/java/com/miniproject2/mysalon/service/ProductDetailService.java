@@ -118,4 +118,51 @@ public class ProductDetailService {
                 .map(ProductDetailDTO::fromEntity)
                 .collect(Collectors.toList());
     }
+
+    public ProductDetailDTO getProductDetail(Long productNum, String size, String color) {
+        ProductDetail productDetail = productDetailRepository.findByProduct_ProductNumAndSizeAndColor(productNum, size, color)
+                .orElseThrow(() -> new EntityNotFoundException("ProductDetail not found with productNum: " + productNum + ", size: " + size + ", color: " + color));
+        return ProductDetailDTO.fromEntity(productDetail);
+    }
+
+    @Transactional
+    public ProductDetailDTO updateProductDetail(Long productNum, String size, String color, ProductDetailDTO.UpdateRequest request) {
+        ProductDetail productDetail = productDetailRepository.findByProduct_ProductNumAndSizeAndColor(productNum, size, color)
+                .orElseThrow(() -> new EntityNotFoundException("ProductDetail not found with productNum: " + productNum + ", size: " + size + ", color: " + color));
+
+        productDetail.setColor(request.getColor());
+        productDetail.setSize(request.getSize());
+        productDetail.setCount(request.getCount());
+        productDetail.setImage(request.getImage());
+
+        return ProductDetailDTO.fromEntity(productDetail);
+    }
+
+    @Transactional
+    public ProductDetailDTO patchProductDetail(Long productNum, String size, String color, ProductDetailDTO.PatchRequest request) {
+        ProductDetail productDetail = productDetailRepository.findByProduct_ProductNumAndSizeAndColor(productNum, size, color)
+                .orElseThrow(() -> new EntityNotFoundException("ProductDetail not found with productNum: " + productNum + ", size: " + size + ", color: " + color));
+
+        if (request.getColor() != null) {
+            productDetail.setColor(request.getColor());
+        }
+        if (request.getSize() != null) {
+            productDetail.setSize(request.getSize());
+        }
+        if (request.getCount() != null) {
+            productDetail.setCount(request.getCount());
+        }
+        if (request.getImage() != null) {
+            productDetail.setImage(request.getImage());
+        }
+
+        return ProductDetailDTO.fromEntity(productDetail);
+    }
+
+    @Transactional
+    public void deleteProductDetail(Long productNum, String size, String color) {
+        ProductDetail productDetail = productDetailRepository.findByProduct_ProductNumAndSizeAndColor(productNum, size, color)
+                .orElseThrow(() -> new EntityNotFoundException("ProductDetail not found with productNum: " + productNum + ", size: " + size + ", color: " + color));
+        productDetailRepository.delete(productDetail);
+    }
 }

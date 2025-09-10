@@ -43,4 +43,26 @@ public class ProductDetailDTO {
                 product
         );
     }
+
+    @Getter
+    @Setter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class UpdateRequest {
+        private String color;
+        private String size;
+        private int count;
+        private String image;
+    }
+
+    @Getter
+    @Setter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class PatchRequest {
+        private String color;
+        private String size;
+        private Integer count;
+        private String image;
+    }
 }

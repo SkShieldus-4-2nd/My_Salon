@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface ProductDetailRepository extends JpaRepository<ProductDetail, Long> {
@@ -19,4 +20,6 @@ public interface ProductDetailRepository extends JpaRepository<ProductDetail, Lo
     List<ProductDetail> findByColor(String color);
 
     List<ProductDetail> findByColorAndSize(String color, String size);
+
+    Optional<ProductDetail> findByProduct_ProductNumAndSizeAndColor(Long productNum, String size, String color);
 }
