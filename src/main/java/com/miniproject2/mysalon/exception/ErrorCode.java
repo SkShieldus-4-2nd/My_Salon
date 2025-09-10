@@ -23,6 +23,10 @@ public enum ErrorCode {
     //사용자 관련
     USER_NOT_FOUND("USER_001","사용자를 찾을 수 없습니다.", HttpStatus.NOT_FOUND),
 
+    PRODUCT_NOT_FOUND("BIZ_004", "상품을 찾을 수 없습니다", HttpStatus.NOT_FOUND),
+
+
+
     //게시물 관련
     POST_NOT_FOUND("POST_001","게시물을 찾을 수 없습니다.", HttpStatus.NOT_FOUND),
     POST_TYPE_WRONG("POST_002","코디 게시물이 아닙니다.", HttpStatus.BAD_REQUEST),

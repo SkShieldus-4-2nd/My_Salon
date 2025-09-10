@@ -66,4 +66,18 @@ public class FavoriteService {
         return favoriteRepository.findByUser(user);
     }
 
+    // 유저가 찜한 상품 개수
+    @Transactional(readOnly = true)
+    public Long getUserFavoriteCount(Long userNum) {
+        User user = userRepository.findById(userNum)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+        return favoriteRepository.countByUser(user);
+    }
+
+    // 특정 상품을 찜한 유저 수
+    @Transactional(readOnly = true)
+    public Long getProductFavoriteCount(Long productNum) {
+        return favoriteRepository.countByProductNum(productNum);
+    }
+
 }

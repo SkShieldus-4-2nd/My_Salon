@@ -11,6 +11,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
@@ -20,6 +23,7 @@ public class ReviewService {
     private final UserRepository userRepository;
     private final ProductDetailRepository productDetailRepository;
 
+    //리뷰 생성
     @Transactional
     public ReviewDTO.Response createReview(ReviewDTO.Request request) {
         User user = userRepository.findById(request.getUserNum())
@@ -39,13 +43,114 @@ public class ReviewService {
         return ReviewDTO.Response.fromEntity(savedReview);
     }
 
-    @Transactional(readOnly = true)
-    public ReviewDTO.Response getReview(Long reviewNum) {
+    // 리뷰 수정
+    @Transactional
+    public ReviewDTO.Response editReview(Long reviewNum, ReviewDTO.Request request) {
         Review review = reviewRepository.findById(reviewNum)
                 .orElseThrow(() -> new IllegalArgumentException("Review not found"));
-        return ReviewDTO.Response.fromEntity(review);
+
+        review.setText(request.getText());
+        review.setScore(request.getScore());
+        review.setReviewImage(request.getReviewImage());
+
+        return ReviewDTO.Response.fromEntity(reviewRepository.save(review));
     }
 
+    // 리뷰 삭제
+    @Transactional
+    public void deleteReview(Long reviewNum) {
+        if (!reviewRepository.existsById(reviewNum)) {
+            throw new IllegalArgumentException("Review not found");
+        }
+        reviewRepository.deleteById(reviewNum);
+    }
+
+
+    //유저 아이디로 리뷰 조회
+    @Transactional(readOnly = true)
+    public List<ReviewDTO.Response> getUserReviews(Long userNum) {
+        User user = userRepository.findById(userNum)
+                .orElseThrow(() -> new IllegalArgumentException("User not found"));
+
+        return reviewRepository.findByUserOrderByCreatedAtDesc(user)
+                .stream()
+                .map(ReviewDTO.Response::fromEntity)
+                .toList();
+    }
+
+
+
+    // 특정 상품(Product) 기준 리뷰 전체 조회
+    @Transactional(readOnly = true)
+    public List<ReviewDTO.Response> getAllReviewsByProductNum(Long productNum) {
+        return reviewRepository.findByProductNumOrderByCreatedAtDesc(productNum).stream()
+                .map(ReviewDTO.Response::fromEntity)
+                .collect(Collectors.toList());
+    }
+
+
+    // 해당 상품(Product)에서 자신이 쓴 리뷰 로드
+    @Transactional(readOnly = true)
+    public List<ReviewDTO.Response> getUserReviewsByProduct(Long userNum, Long productNum) {
+        User user = userRepository.findById(userNum)
+                .orElseThrow(() -> new IllegalArgumentException("User not found"));
+
+        return reviewRepository.findByUserAndProductNumOrderByCreatedAtDesc(user, productNum).stream()
+                .map(ReviewDTO.Response::fromEntity)
+                .collect(Collectors.toList());
+    }
+
+    // 유저 스펙 기반 특정 상품(Product) 리뷰 조회
+    @Transactional(readOnly = true)
+    public List<ReviewDTO.Response> getReviewsByUserSpecForProduct(Long productNum,
+                                                                   Short targetTall,
+                                                                   Short targetWeight,
+                                                                   Short tallRange,
+                                                                   Short weightRange) {
+        List<Review> productReviews = reviewRepository.findByProductNumOrderByCreatedAtDesc(productNum);
+
+        return productReviews.stream()
+                .filter(r -> {
+                    Short userTall = r.getUser().getTall();
+                    Short userWeight = r.getUser().getWeight();
+                    boolean tallMatch = (userTall != null) && Math.abs(userTall - targetTall) <= tallRange;
+                    boolean weightMatch = (userWeight != null) && Math.abs(userWeight - targetWeight) <= weightRange;
+                    return tallMatch && weightMatch;
+                })
+                .map(ReviewDTO.Response::fromEntity)
+                .collect(Collectors.toList());
+    }
+
+    // 특정 상품(Product) 기준 별점 높은 순 리뷰 조회
+    @Transactional(readOnly = true)
+    public List<ReviewDTO.Response> getReviewsByProductSortedByScore(Long productNum) {
+        return reviewRepository.findByProductNumOrderByScoreDescCreatedAtDesc(productNum).stream()
+                .map(ReviewDTO.Response::fromEntity)
+                .collect(Collectors.toList());
+    }
+
+
+    // 특정 상품(Product) 기준 리뷰 점수 평균 조회
+    @Transactional(readOnly = true)
+    public Double getAverageScoreByProductNum(Long productNum) {
+        Double avgScore = reviewRepository.findAverageScoreByProductNum(productNum);
+        // 리뷰가 없으면 null 반환될 수 있으므로 0.0으로 처리
+        return avgScore != null ? avgScore : 0.0;
+    }
+
+    // 유저가 작성한 리뷰 개수 반환
+    @Transactional(readOnly = true)
+    public Long getUserReviewCount(Long userNum) {
+        User user = userRepository.findById(userNum)
+                .orElseThrow(() -> new IllegalArgumentException("User not found"));
+        return reviewRepository.countByUser(user);
+    }
+
+    // 특정 상품(Product) 리뷰 개수 반환
+    @Transactional(readOnly = true)
+    public Long getProductReviewCount(Long productNum) {
+        return reviewRepository.countByProductNum(productNum);
+    }
 
 
 }

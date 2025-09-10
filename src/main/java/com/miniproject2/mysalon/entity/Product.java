@@ -27,7 +27,7 @@ public class Product {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_num")
-    private User userNum;
+    private User user;
 
     @Column(nullable = false)
     private String productName;
@@ -40,7 +40,6 @@ public class Product {
 
     @Column(nullable = false)
     private String description;
-
 
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)

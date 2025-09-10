@@ -39,4 +39,16 @@ public class FavoriteController {
                 .collect(Collectors.toList());
         return ResponseEntity.ok(favorites);
     }
+
+    // 유저가 찜한 상품 개수 조회
+    @GetMapping("/user/{userNum}/count")
+    public ResponseEntity<Long> getUserFavoriteCount(@PathVariable Long userNum) {
+        return ResponseEntity.ok(favoriteService.getUserFavoriteCount(userNum));
+    }
+
+    // 특정 상품 찜 개수 조회
+    @GetMapping("/product/{productNum}/count")
+    public ResponseEntity<Long> getProductFavoriteCount(@PathVariable Long productNum) {
+        return ResponseEntity.ok(favoriteService.getProductFavoriteCount(productNum));
+    }
 }

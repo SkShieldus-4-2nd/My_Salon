@@ -25,12 +25,13 @@ public class Order {
     @Column(name = "order_num")
     private Long orderNum;
 
-    @Column(nullable = false)
-    private Long totalPrice;
 
     @CreationTimestamp
     @Column(name = "ordered_at", updatable = false)
     private LocalDateTime orderedAt;
+
+    @Enumerated(EnumType.STRING)
+    private OrderStatus status;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_num")
@@ -39,13 +40,9 @@ public class Order {
 
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
     @Builder.Default
-    private List<OrderProduct> orderProducts = new ArrayList<>();
+    private List<OrderDetail> orderProducts = new ArrayList<>();
 
 
-
-    @Column
-    @Enumerated(EnumType.STRING)
-    private OrderStatus orderStatus;
 
 
 }

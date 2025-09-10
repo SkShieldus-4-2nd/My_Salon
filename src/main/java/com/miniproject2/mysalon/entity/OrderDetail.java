@@ -7,16 +7,16 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Table(name = "order_products")
+@Table(name = "order-details")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class OrderProduct {
+public class OrderDetail{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "order_product_num")
-    private Long orderProductNum;
+    @Column(name = "order_detail_num")
+    private Long orderDetailNum;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "product_detail_num")
@@ -24,6 +24,10 @@ public class OrderProduct {
 
     @Column(nullable = false)
     private Integer count;
+
+    @Column(nullable = false)
+    private Long price; // 주문 시점의 가격
+
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "order_num")

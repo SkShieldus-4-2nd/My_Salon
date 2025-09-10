@@ -2,86 +2,102 @@ package com.miniproject2.mysalon.service;
 
 import com.miniproject2.mysalon.controller.dto.OrderDTO;
 import com.miniproject2.mysalon.entity.*;
-import com.miniproject2.mysalon.repository.*;
+import com.miniproject2.mysalon.repository.OrderDetailRepository;
+import com.miniproject2.mysalon.repository.OrderRepository;
+import com.miniproject2.mysalon.repository.ProductDetailRepository;
+import com.miniproject2.mysalon.repository.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-@Transactional(readOnly = true)
+@Transactional
 public class OrderService {
 
     private final OrderRepository orderRepository;
     private final UserRepository userRepository;
     private final ProductDetailRepository productDetailRepository;
-    private final OrderProductRepository orderProductRepository;
+    private final OrderDetailRepository orderDetailRepository;
 
-    @Transactional
-    public Long createOrder(OrderDTO.Request request) {
-        User user = userRepository.findById(request.getUserId())
+    // Create
+    public Long createOrder(OrderDTO.CreateOrderRequest request) {
+        User user = userRepository.findById(request.getUserNum())
                 .orElseThrow(() -> new EntityNotFoundException("User not found"));
-
-        long totalPrice = 0;
-        List<OrderProduct> orderProducts = new ArrayList<>();
-
-        for (OrderDTO.OrderDetailDTO detailDTO : request.getOrderDetails()) {
-            ProductDetail productDetail = productDetailRepository.findById(detailDTO.getProductDetailNum())
-                    .orElseThrow(() -> new EntityNotFoundException("ProductDetail not found"));
-
-            if (productDetail.getCount() < detailDTO.getCount()) {
-                throw new IllegalArgumentException("재고가 부족합니다.");
-            }
-
-            productDetail.setCount(productDetail.getCount() - detailDTO.getCount());
-            totalPrice += productDetail.getProduct().getPrice() * detailDTO.getCount();
-
-            OrderProduct orderProduct = OrderProduct.builder()
-                    .productDetail(productDetail)
-                    .count(detailDTO.getCount())
-                    .build();
-            orderProducts.add(orderProduct);
-        }
 
         Order order = Order.builder()
                 .user(user)
-                .totalPrice(totalPrice)
-                .orderStatus(OrderStatus.ORDERED)
+                .orderedAt(LocalDateTime.now())
+                .status(OrderStatus.ORDERED)
+                .orderProducts(new ArrayList<>()) // 초기화
                 .build();
 
-        Order savedOrder = orderRepository.save(order);
+        for (OrderDTO.OrderItemDTO itemDto : request.getOrderItems()) {
+            ProductDetail productDetail = productDetailRepository.findById(itemDto.getProductDetailNum())
+                    .orElseThrow(() -> new EntityNotFoundException("ProductDetail not found"));
 
-        for (OrderProduct orderProduct : orderProducts) {
-            orderProduct.setOrder(savedOrder);
-            orderProductRepository.save(orderProduct);
+            OrderDetail orderDetail = OrderDetail.builder()
+                    .order(order)
+                    .productDetail(productDetail)
+                    .count(itemDto.getCount())
+                    .price(productDetail.getProduct().getPrice()) // 현재 상품 가격으로 주문
+                    .orderStatus(OrderStatus.ORDERED)
+                    .build();
+            order.getOrderProducts().add(orderDetail);
         }
 
-        return savedOrder.getOrderNum();
+        return orderRepository.save(order).getOrderNum();
     }
 
-    public OrderDTO.Response getOrderById(Long orderId) {
-        Order order = orderRepository.findById(orderId)
-                .orElseThrow(() -> new EntityNotFoundException("Order not found "));
-        return OrderDTO.Response.fromEntity(order);
+    // Read
+    @Transactional(readOnly = true)
+    public List<Order> getAllOrders() {
+        return orderRepository.findAll();
     }
 
-    @Transactional
-    public void cancelOrder(Long orderId) {
+    @Transactional(readOnly = true)
+    public List<Order> getOrdersByUser(Long userNum) {
+        return orderRepository.findByUser_UserNum(userNum);
+    }
+
+    // Update
+    public Order updateOrder(Long orderId, OrderDTO.UpdateOrderRequest request) {
         Order order = orderRepository.findById(orderId)
-                .orElseThrow(() -> new EntityNotFoundException("Order not found "));
+                .orElseThrow(() -> new EntityNotFoundException("Order not found"));
+        order.setStatus(request.getOrderStatus());
+        return orderRepository.save(order);
+    }
 
-        if (order.getOrderStatus() == OrderStatus.DELIVERED) {
-            throw new IllegalArgumentException("이미 배송된 상품은 취소가 불가능합니다.");
-        }
+    // Delete
+    public void deleteOrder(Long orderId) {
+        orderRepository.deleteById(orderId);
+    }
 
-        order.setOrderStatus(OrderStatus.CANCELED);
+    // Search by product name
+    @Transactional(readOnly = true)
+    public List<Order> searchOrdersByProductName(String query) {
+        String[] keywords = query.split("\\s+");
+        String keyword1 = keywords.length > 0 ? keywords[0] : null;
+        String keyword2 = keywords.length > 1 ? keywords[1] : null;
+        String keyword3 = keywords.length > 2 ? keywords[2] : null;
+        return orderRepository.findByProductNameKeywords(keyword1, keyword2, keyword3);
+    }
 
-        for (OrderProduct orderProduct : order.getOrderProducts()) {
-            orderProduct.getProductDetail().setCount(orderProduct.getProductDetail().getCount() + orderProduct.getCount());
-        }
+    // Search by user number
+    @Transactional(readOnly = true)
+    public List<Order> searchOrdersByUserNum(Long userNum) {
+        return orderRepository.findByUser_UserNum(userNum);
+    }
+
+    // Search by product number
+    @Transactional(readOnly = true)
+    public List<Order> searchOrdersByProductNum(Long productNum) {
+        return orderRepository.findByProductNum(productNum);
     }
 }
