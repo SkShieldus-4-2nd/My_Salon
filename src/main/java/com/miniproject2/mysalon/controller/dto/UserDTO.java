@@ -45,7 +45,6 @@ public class UserDTO {
         private Long userNum;
         private String id;
         private String userName;
-        private String secondPassword;
         private String profileImage;
         private Short tall;
         private Short weight;
@@ -58,7 +57,6 @@ public class UserDTO {
                     .userNum(user.getUserNum())
                     .id(user.getId())
                     .userName(user.getUserName())
-                    .secondPassword(user.getSecondPassword())
                     .profileImage(user.getProfileImage())
                     .tall(user.getTall())
                     .weight(user.getWeight())

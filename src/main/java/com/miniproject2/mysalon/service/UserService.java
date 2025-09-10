@@ -5,6 +5,7 @@ import com.miniproject2.mysalon.entity.User;
 import com.miniproject2.mysalon.repository.UserRepository;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -16,14 +17,19 @@ import java.util.List;
 public class UserService {
 
     private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder; // 추가
 
     // 유저 생성
     public UserDTO.Response createUser(UserDTO.Request request) {
+        // 비밀번호 암호화
+        String encodedPassword = passwordEncoder.encode(request.getPassword());
+        String encodedSecondPassword = passwordEncoder.encode(request.getSecondPassword());
+
         User user = User.builder()
                 .id(request.getId())
-                .password(request.getPassword())
+                .password(encodedPassword)
                 .userName(request.getUserName())
-                .secondPassword(request.getSecondPassword())
+                .secondPassword(encodedSecondPassword)
                 .profileImage(request.getProfileImage())
                 .tall(request.getTall())
                 .weight(request.getWeight())
@@ -42,12 +48,20 @@ public class UserService {
 
         user.setUserName(request.getUserName());
         user.setProfileImage(request.getProfileImage());
-        user.setSecondPassword(request.getSecondPassword());
         user.setTall(request.getTall());
         user.setWeight(request.getWeight());
         user.setCreatedAt(request.getCreatedAt());
         user.setType(request.getType());
         user.setStoreName(request.getStoreName());
+
+        // 비밀번호가 null이 아니면 암호화 후 업데이트
+        if (request.getPassword() != null && !request.getPassword().isEmpty()) {
+            user.setPassword(passwordEncoder.encode(request.getPassword()));
+        }
+
+        if (request.getSecondPassword() != null && !request.getSecondPassword().isEmpty()) {
+            user.setSecondPassword(passwordEncoder.encode(request.getSecondPassword()));
+        }
 
         return UserDTO.Response.fromEntity(userRepository.save(user));
     }
