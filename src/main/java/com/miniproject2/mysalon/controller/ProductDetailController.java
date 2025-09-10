@@ -76,4 +76,13 @@ public class ProductDetailController {
         List<ProductDetailDTO> dtoList = productDetailService.searchProductDetailByColorAndSize(color, size);
         return ResponseEntity.ok(dtoList);
     }
+
+    @GetMapping("/search")
+    public ResponseEntity<ProductDetailDTO> getProductDetail(
+            @RequestParam Long productNum,
+            @RequestParam String size,
+            @RequestParam String color) {
+        ProductDetailDTO dto = productDetailService.getProductDetail(productNum, size, color);
+        return ResponseEntity.ok(dto);
+    }
 }
