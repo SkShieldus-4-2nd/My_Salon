@@ -48,4 +48,25 @@ public class CommentDTO {
                     .build();
         }
     }
+
+    @Data
+    @NoArgsConstructor
+    @AllArgsConstructor
+    @Builder
+    public static class CommentResponse {
+
+        private String userName;
+        private String profile;
+        private String text;
+        private LocalDateTime updatedAt;
+
+        public static CommentResponse fromEntity(Comment comment) {
+            return CommentResponse.builder()
+                    .userName(comment.getUser().getUserName())
+                    .text(comment.getText())
+                    .updatedAt(comment.getUpdatedAt())
+                    .profile(comment.getUser().getProfileImage())
+                    .build();
+        }
+    }
 }

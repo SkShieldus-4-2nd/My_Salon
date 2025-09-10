@@ -9,6 +9,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/api/posts")
 @RequiredArgsConstructor
@@ -22,9 +24,33 @@ public class PostController {
         return ResponseEntity.ok(response);
     }
 
-    @PostMapping("/api/coordi-posts")
+    @PostMapping("/coordi")
     public ResponseEntity<PostDTO.Response> createCoordiPost(@RequestBody PostDTO.PostRequest request) {
         PostDTO.Response response = postService.createCoordiPost(request);
+        return ResponseEntity.ok(response);
+    }
+
+    @GetMapping
+    public ResponseEntity<List<PostDTO.SimplePost>> getAllPost() {
+        List<PostDTO.SimplePost> response = postService.getAllPosts();
+        return ResponseEntity.ok(response);
+    }
+    @GetMapping("/coordi")
+    public ResponseEntity<List<PostDTO.SimpleCoordiPost>> getAllCoordiPost() {
+        List<PostDTO.SimpleCoordiPost> response = postService.getAllCoordiPosts();
+        return ResponseEntity.ok(response);
+    }
+
+
+    @GetMapping("/hot-coordi")
+    public ResponseEntity<List<PostDTO.SimpleCoordiPost>> getHotCoordiPost() {
+        List<PostDTO.SimpleCoordiPost> response = postService.getHotCoordiPosts();
+        return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/{postId}")
+    public ResponseEntity<PostDTO.PostDetail> getPostDetail(@PathVariable Long postId) {
+        PostDTO.PostDetail response = postService.getPostDetail(postId);
         return ResponseEntity.ok(response);
     }
 
@@ -34,6 +60,8 @@ public class PostController {
         postService.deletePost(postNum);
         return ResponseEntity.noContent().build();
     }
+
+
 
 
 }
