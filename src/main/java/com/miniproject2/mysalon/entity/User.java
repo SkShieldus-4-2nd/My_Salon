@@ -5,7 +5,9 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.CreationTimestamp;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -49,6 +51,9 @@ public class User {
     @Column(unique = true, nullable = false)
     private String userName;
 
+    @Column(nullable = false)
+    private String secondPassword;
+
     //프로필 이미지
     @Column
     private String profileImage;
@@ -60,6 +65,10 @@ public class User {
     //몸무게
     @Column
     private Short weight;
+
+    @CreationTimestamp
+    @Column(updatable = false)
+    private LocalDateTime createdAt;
 
     //사용자 타입
     @Enumerated(EnumType.STRING) // 중요!
