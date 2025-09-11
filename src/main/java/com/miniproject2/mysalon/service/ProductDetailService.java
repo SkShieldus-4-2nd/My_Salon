@@ -121,14 +121,14 @@ public class ProductDetailService {
 
     public ProductDetailDTO getProductDetail(Long productNum, String size, String color) {
         ProductDetail productDetail = productDetailRepository.findByProduct_ProductNumAndSizeAndColor(productNum, size, color)
-                .orElseThrow(() -> new EntityNotFoundException("ProductDetail not found with productNum: " + productNum + ", size: " + size + ", color: " + color));
+                .orElseThrow(() -> new EntityNotFoundException("ProductDetail", "productNum: " + productNum + ", size: " + size + ", color: " + color));
         return ProductDetailDTO.fromEntity(productDetail);
     }
 
     @Transactional
     public ProductDetailDTO updateProductDetail(Long productNum, String size, String color, ProductDetailDTO.UpdateRequest request) {
         ProductDetail productDetail = productDetailRepository.findByProduct_ProductNumAndSizeAndColor(productNum, size, color)
-                .orElseThrow(() -> new EntityNotFoundException("ProductDetail not found with productNum: " + productNum + ", size: " + size + ", color: " + color));
+                .orElseThrow(() -> new EntityNotFoundException("ProductDetail", "productNum: " + productNum + ", size: " + size + ", color: " + color));
 
         productDetail.setColor(request.getColor());
         productDetail.setSize(request.getSize());
@@ -141,7 +141,7 @@ public class ProductDetailService {
     @Transactional
     public ProductDetailDTO patchProductDetail(Long productNum, String size, String color, ProductDetailDTO.PatchRequest request) {
         ProductDetail productDetail = productDetailRepository.findByProduct_ProductNumAndSizeAndColor(productNum, size, color)
-                .orElseThrow(() -> new EntityNotFoundException("ProductDetail not found with productNum: " + productNum + ", size: " + size + ", color: " + color));
+                .orElseThrow(() -> new EntityNotFoundException("ProductDetail", "productNum: " + productNum + ", size: " + size + ", color: " + color));
 
         if (request.getColor() != null) {
             productDetail.setColor(request.getColor());
@@ -162,7 +162,7 @@ public class ProductDetailService {
     @Transactional
     public void deleteProductDetail(Long productNum, String size, String color) {
         ProductDetail productDetail = productDetailRepository.findByProduct_ProductNumAndSizeAndColor(productNum, size, color)
-                .orElseThrow(() -> new EntityNotFoundException("ProductDetail not found with productNum: " + productNum + ", size: " + size + ", color: " + color));
+                .orElseThrow(() -> new EntityNotFoundException("ProductDetail", "productNum: " + productNum + ", size: " + size + ", color: " + color));
         productDetailRepository.delete(productDetail);
     }
 }
