@@ -35,5 +35,9 @@ public class ProductDetail {
     @JoinColumn(name = "product_num")
     private Product product;
 
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "order_detail_num")
+    private OrderDetail orderDetail;
+
 
 }

@@ -53,6 +53,9 @@ public class Product {
     @Enumerated(EnumType.STRING)
     private CategoryLow categoryLow;
 
+    @Column(nullable = false)
+    private Long deliveryPrice;
+
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
     @Builder.Default
     private List<ProductDetail> productDetails = new ArrayList<>();

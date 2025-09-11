@@ -18,15 +18,13 @@ public class OrderDetail{
     @Column(name = "order_detail_num")
     private Long orderDetailNum;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "product_detail_num")
     private ProductDetail productDetail;
 
     @Column(nullable = false)
     private Integer count;
 
-    @Column(nullable = false)
-    private Long price; // 주문 시점의 가격
 
 
     @ManyToOne(fetch = FetchType.LAZY)

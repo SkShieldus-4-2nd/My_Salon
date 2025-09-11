@@ -37,7 +37,6 @@ public class OrderService {
         Order order = Order.builder()
                 .user(user)
                 .orderedAt(LocalDateTime.now())
-                .status(OrderStatus.ORDERED)
                 .orderProducts(new ArrayList<>()) // 초기화
                 .build();
 
@@ -48,8 +47,7 @@ public class OrderService {
             OrderDetail orderDetail = OrderDetail.builder()
                     .order(order)
                     .productDetail(productDetail)
-                    .count(itemDto.getCount())
-                    .price(productDetail.getProduct().getPrice()) // 현재 상품 가격으로 주문
+                    .count(itemDto.getCount())// 현재 상품 가격으로 주문
                     .orderStatus(OrderStatus.ORDERED)
                     .build();
             order.getOrderProducts().add(orderDetail);
@@ -65,7 +63,6 @@ public class OrderService {
         Order order = Order.builder()
                 .user(user)
                 .orderedAt(LocalDateTime.now())
-                .status(OrderStatus.ORDERED)
                 .orderProducts(new ArrayList<>()) // 초기화
                 .build();
 
@@ -76,8 +73,7 @@ public class OrderService {
             OrderDetail orderDetail = OrderDetail.builder()
                     .order(order)
                     .productDetail(productDetail)
-                    .count(itemDto.getCount())
-                    .price(productDetail.getProduct().getPrice()) // 현재 상품 가격으로 주문
+                    .count(itemDto.getCount())// 현재 상품 가격으로 주문
                     .orderStatus(OrderStatus.ORDERED)
                     .build();
             order.getOrderProducts().add(orderDetail);
@@ -109,7 +105,6 @@ public class OrderService {
     public Order updateOrder(Long orderId, OrderDTO.UpdateOrderRequest request) {
         Order order = orderRepository.findById(orderId)
                 .orElseThrow(() -> new EntityNotFoundException("Order not found"));
-        order.setStatus(request.getOrderStatus());
         return orderRepository.save(order);
     }
 
