@@ -2,6 +2,7 @@ package com.miniproject2.mysalon.controller;
 
 import com.miniproject2.mysalon.controller.dto.CreateProductDTO;
 import com.miniproject2.mysalon.controller.dto.ProductDTO;
+import com.miniproject2.mysalon.controller.dto.ProductSimpleDTO;
 import com.miniproject2.mysalon.entity.Category;
 import com.miniproject2.mysalon.entity.CategoryLow;
 import com.miniproject2.mysalon.entity.Gender;
@@ -74,4 +75,14 @@ public class ProductController {
     public ResponseEntity<List<ProductDTO>> getAllProductsByUser(@PathVariable Long userId) {
         return ResponseEntity.ok(productService.getAllProductsByUser(userId));
     }
+    @GetMapping("/all-products")
+    public ResponseEntity<List<ProductSimpleDTO.Response>> getAllProducts() {
+        return ResponseEntity.ok(productService.getAllProducts2());
+    }
+
+    @GetMapping("/detail/{productId}")
+    public ResponseEntity<ProductSimpleDTO.ProductDetailResponse> getProductById(@PathVariable Long productId) {
+        return ResponseEntity.ok(productService.getProductById(productId));
+    }
+
 }

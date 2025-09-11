@@ -56,6 +56,9 @@ public class Product {
     @Column(nullable = false)
     private Long deliveryPrice;
 
+    @Column(nullable = true)
+    private Long likeCount;
+
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
     @Builder.Default
     private List<ProductDetail> productDetails = new ArrayList<>();

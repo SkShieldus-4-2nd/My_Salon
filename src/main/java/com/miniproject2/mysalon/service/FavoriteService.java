@@ -1,10 +1,10 @@
 package com.miniproject2.mysalon.service;
 
 import com.miniproject2.mysalon.controller.dto.FavoriteDTO;
-import com.miniproject2.mysalon.entity.Favorite;
-import com.miniproject2.mysalon.entity.FavoriteId;
-import com.miniproject2.mysalon.entity.Product;
-import com.miniproject2.mysalon.entity.User;
+import com.miniproject2.mysalon.controller.dto.PostDTO;
+import com.miniproject2.mysalon.entity.*;
+import com.miniproject2.mysalon.exception.BusinessException;
+import com.miniproject2.mysalon.exception.ErrorCode;
 import com.miniproject2.mysalon.repository.FavoriteRepository;
 import com.miniproject2.mysalon.repository.ProductRepository;
 import com.miniproject2.mysalon.repository.UserRepository;
@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -24,34 +25,37 @@ public class FavoriteService {
     private final ProductRepository productRepository;
 
     @Transactional
-    public FavoriteDTO.Response addFavorite(FavoriteDTO.Request request) {
-        Long userNum = request.getUserNum();
-        Long productNum = request.getProductNum();
+    public FavoriteDTO.ClickResponse addFavorite(FavoriteDTO.FavoriteRequest favoriteRequest) {
 
+        Long userNum = favoriteRequest.getUserNum();
+        Long productNum = favoriteRequest.getProductNum();
         User user = userRepository.findById(userNum)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+                .orElseThrow(() -> new BusinessException(ErrorCode.USER_NOT_FOUND));
         Product product = productRepository.findById(productNum)
-                .orElseThrow(() -> new RuntimeException("Product not found"));
+                .orElseThrow(() -> new BusinessException(ErrorCode.PRODUCT_NOT_FOUND));
 
         FavoriteId favoriteId = new FavoriteId(userNum, productNum);
+        Optional<Favorite> like = favoriteRepository.findById(favoriteId);
 
-        if (favoriteRepository.existsById(favoriteId)) {
-            throw new RuntimeException("Already added to favorites");
+        if (like.isPresent()) {
+            product.setLikeCount(product.getLikeCount()-1);
+            favoriteRepository.delete(like.get());
+        } else {
+            product.setLikeCount(product.getLikeCount()+1);
+            Favorite savedLike = Favorite.builder()
+                    .id(favoriteId)
+                    .user(user)
+                    .product(product)
+                    .build();
+            favoriteRepository.save(savedLike);
         }
+        return FavoriteDTO.ClickResponse.fromEntity(product);
 
-        Favorite favorite = Favorite.builder()
-                .id(favoriteId)
-                .user(user)
-                .product(product)
-                .build();
-
-        Favorite savedFavorite = favoriteRepository.save(favorite);
-        return FavoriteDTO.Response.fromEntity(savedFavorite);
     }
 
     @Transactional
-    public void removeFavorite(FavoriteDTO.Request request) {
-        FavoriteId favoriteId = new FavoriteId(request.getUserNum(), request.getProductNum());
+    public void removeFavorite(FavoriteDTO.FavoriteRequest favoriteRequest) {
+        FavoriteId favoriteId = new FavoriteId(favoriteRequest.getUserNum(), favoriteRequest.getProductNum());
         if (!favoriteRepository.existsById(favoriteId)) {
             throw new RuntimeException("Favorite not found");
         }

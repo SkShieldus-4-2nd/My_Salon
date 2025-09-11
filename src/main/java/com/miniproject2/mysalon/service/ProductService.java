@@ -2,6 +2,8 @@ package com.miniproject2.mysalon.service;
 
 import com.miniproject2.mysalon.controller.dto.CreateProductDTO;
 import com.miniproject2.mysalon.controller.dto.ProductDTO;
+import com.miniproject2.mysalon.controller.dto.ProductDetailDTO;
+import com.miniproject2.mysalon.controller.dto.ProductSimpleDTO;
 import com.miniproject2.mysalon.entity.*;
 import com.miniproject2.mysalon.exception.BusinessException;
 import com.miniproject2.mysalon.exception.EntityNotFoundException;
@@ -144,5 +146,15 @@ public class ProductService {
 
     public List<ProductDTO> getAllProductsByUser(Long userId) {
         return productRepository.findByUserUserNum(userId).stream().map(ProductDTO::fromEntity).toList();
+    }
+
+    public List<ProductSimpleDTO.Response> getAllProducts2() {
+        return productRepository.findAll().stream().map(ProductSimpleDTO.Response::fromEntity).collect(Collectors.toList());
+    }
+
+    public ProductSimpleDTO.ProductDetailResponse getProductById(Long productId) {
+        Product product = productRepository.findById(productId)
+                .orElseThrow(() -> new BusinessException(ErrorCode.PRODUCT_NOT_FOUND));
+        return ProductSimpleDTO.ProductDetailResponse.fromEntity(product);
     }
 }

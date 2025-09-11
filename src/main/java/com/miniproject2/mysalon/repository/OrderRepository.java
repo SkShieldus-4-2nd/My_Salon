@@ -20,4 +20,5 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
             "(:keyword3 IS NULL OR p.productName LIKE %:keyword3%)")
     List<Order> findByProductNameKeywords(@Param("keyword1") String keyword1, @Param("keyword2") String keyword2, @Param("keyword3") String keyword3);
 
+    List<Order> findByUserUserNum(Long usreId);
 }
