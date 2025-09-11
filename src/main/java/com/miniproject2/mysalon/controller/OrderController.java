@@ -22,6 +22,11 @@ public class OrderController {
         return ResponseEntity.ok(orderService.createOrder(request));
     }
 
+    @PostMapping("/create")
+    public ResponseEntity<OrderDTO.OrderCompleteResponse> createOrder2(@RequestBody OrderDTO.CreateOrderRequest request) {
+        return ResponseEntity.ok(orderService.createOrder2(request));
+    }
+
     @GetMapping
     public ResponseEntity<List<OrderDTO.OrderResponse>> getAllOrders() {
         List<Order> orders = orderService.getAllOrders();
@@ -29,6 +34,13 @@ public class OrderController {
                 .map(OrderDTO.OrderResponse::fromEntity)
                 .collect(Collectors.toList());
         return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/get")
+    public ResponseEntity<List<OrderDTO.OrderResponse2>> getAllOrders2() {
+        List<OrderDTO.OrderResponse2> orders = orderService.getAllOrders2();
+
+        return ResponseEntity.ok(orders);
     }
 
     @GetMapping("/user/{userNum}")

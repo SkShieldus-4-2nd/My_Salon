@@ -2,12 +2,13 @@ package com.miniproject2.mysalon.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
+//import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+//import org.springframework.security.web.SecurityFilterChain;
+//import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+//import org.springframework.security.crypto.password.PasswordEncoder;
 
-@Configuration
+
+/*@Configuration
 public class SecurityConfig {
 
     // BCryptPasswordEncoder Bean
@@ -15,7 +16,7 @@ public class SecurityConfig {
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
-
+*//*
     // Security 설정
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -28,5 +29,6 @@ public class SecurityConfig {
             .httpBasic(); // 간단한 테스트용 Basic 인증 활성화
 
         return http.build();
-    }
-}
+    }*//*
+}*/
+

@@ -1,5 +1,6 @@
 package com.miniproject2.mysalon.controller;
 
+import com.miniproject2.mysalon.controller.dto.CreateProductDTO;
 import com.miniproject2.mysalon.controller.dto.ProductDTO;
 import com.miniproject2.mysalon.entity.Category;
 import com.miniproject2.mysalon.entity.CategoryLow;
@@ -21,6 +22,11 @@ public class ProductController {
     @PostMapping
     public ResponseEntity<ProductDTO> createProduct(@RequestBody ProductDTO productDTO) {
         return ResponseEntity.ok(productService.createProduct(productDTO));
+    }
+
+    @PostMapping("/create")
+    public ResponseEntity<ProductDTO> createProduct(@RequestBody CreateProductDTO.ProductRequest request) {
+        return ResponseEntity.ok(productService.createProduct2(request));
     }
 
     @PutMapping("/{productId}")

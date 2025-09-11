@@ -28,7 +28,7 @@ public class ProductDetail {
     @Column(nullable = false)
     private Integer count;
 
-    @Column(nullable = false)
+    @Column(nullable = true)
     private String image;
 
     @ManyToOne(fetch = FetchType.LAZY)

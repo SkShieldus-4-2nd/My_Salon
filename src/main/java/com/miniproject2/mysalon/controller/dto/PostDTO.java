@@ -6,6 +6,7 @@ import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 public class PostDTO {
 
@@ -26,6 +27,7 @@ public class PostDTO {
 
         private String image;
     }
+
 
     @Data
     @NoArgsConstructor
@@ -51,5 +53,75 @@ public class PostDTO {
                     .build();
         }
     }
+
+    @Data
+    @NoArgsConstructor
+    @AllArgsConstructor
+    @Builder
+    public static class SimplePost {
+        private String image;
+        private String title;
+        private String writer;
+        private LocalDateTime writingDate;
+        private Integer commentCount;
+
+
+        public static SimplePost fromEntity(Post post) {
+            return SimplePost.builder()
+                    .image(post.getImage())
+                    .title(post.getTitle())
+                    .writer(post.getUser().getUserName())
+                    .writingDate(post.getUpdatedAt())
+                    .commentCount(post.getComments().size())
+                    .build();
+        }
+    }
+
+    @Data
+    @NoArgsConstructor
+    @AllArgsConstructor
+    @Builder
+    public static class SimpleCoordiPost {
+        private String coordiImage;
+        private String title;
+        private String writer;
+        private String userImage;
+        private Long likeCount;
+
+        public static SimpleCoordiPost fromEntity(Post post) {
+            return SimpleCoordiPost.builder()
+                    .coordiImage(post.getImage())
+                    .title(post.getTitle())
+                    .writer(post.getUser().getUserName())
+                    .likeCount(post.getLikeCount())
+                    .build();
+        }
+    }
+
+    @Data
+    @NoArgsConstructor
+    @AllArgsConstructor
+    @Builder
+    public static class PostDetail {
+        private String postImage;
+        private String title;
+        private String writer;
+        private String text;
+        List<CommentDTO.CommentResponse> comments;
+
+        public static PostDetail fromEntity(Post post) {
+            return PostDetail.builder()
+                    .postImage(post.getImage())
+                    .title(post.getTitle())
+                    .writer(post.getUser().getUserName())
+                    .text(post.getText())
+                    .comments(post.getComments().stream().map(CommentDTO.CommentResponse::fromEntity).toList())
+                    .build();
+        }
+    }
+
+
+
+
 
 }
