@@ -22,8 +22,10 @@ public enum ErrorCode {
     OPERATION_NOT_ALLOWED("BIZ_002", "허용되지 않은 작업입니다", HttpStatus.BAD_REQUEST),
     //사용자 관련
     USER_NOT_FOUND("USER_001","사용자를 찾을 수 없습니다.", HttpStatus.NOT_FOUND),
-
-    PRODUCT_NOT_FOUND("BIZ_004", "상품을 찾을 수 없습니다", HttpStatus.NOT_FOUND),
+    USER_ID_DUPLICATE("USER_002","중복된 아이디입니다.", HttpStatus.BAD_REQUEST),
+    USER_NAME_DUPLICATE("USER_002","중복된 이름입니다.", HttpStatus.BAD_REQUEST),
+    //상품 관련
+    PRODUCT_NOT_FOUND("PRODUCT_001", "상품을 찾을 수 없습니다", HttpStatus.NOT_FOUND),
 
 
 

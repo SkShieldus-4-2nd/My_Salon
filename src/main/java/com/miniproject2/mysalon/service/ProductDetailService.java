@@ -3,7 +3,9 @@ package com.miniproject2.mysalon.service;
 import com.miniproject2.mysalon.controller.dto.ProductDetailDTO;
 import com.miniproject2.mysalon.entity.Product;
 import com.miniproject2.mysalon.entity.ProductDetail;
+import com.miniproject2.mysalon.exception.BusinessException;
 import com.miniproject2.mysalon.exception.EntityNotFoundException;
+import com.miniproject2.mysalon.exception.ErrorCode;
 import com.miniproject2.mysalon.repository.ProductDetailRepository;
 import com.miniproject2.mysalon.repository.ProductRepository;
 import lombok.RequiredArgsConstructor;
@@ -121,14 +123,14 @@ public class ProductDetailService {
 
     public ProductDetailDTO getProductDetail(Long productNum, String size, String color) {
         ProductDetail productDetail = productDetailRepository.findByProduct_ProductNumAndSizeAndColor(productNum, size, color)
-                .orElseThrow(() -> new EntityNotFoundException("ProductDetail not found with productNum: " + productNum + ", size: " + size + ", color: " + color));
+                .orElseThrow(() -> new BusinessException(ErrorCode.PRODUCT_NOT_FOUND));
         return ProductDetailDTO.fromEntity(productDetail);
     }
 
     @Transactional
     public ProductDetailDTO updateProductDetail(Long productNum, String size, String color, ProductDetailDTO.UpdateRequest request) {
         ProductDetail productDetail = productDetailRepository.findByProduct_ProductNumAndSizeAndColor(productNum, size, color)
-                .orElseThrow(() -> new EntityNotFoundException("ProductDetail not found with productNum: " + productNum + ", size: " + size + ", color: " + color));
+                .orElseThrow(() -> new BusinessException(ErrorCode.PRODUCT_NOT_FOUND));
 
         productDetail.setColor(request.getColor());
         productDetail.setSize(request.getSize());
@@ -141,7 +143,7 @@ public class ProductDetailService {
     @Transactional
     public ProductDetailDTO patchProductDetail(Long productNum, String size, String color, ProductDetailDTO.PatchRequest request) {
         ProductDetail productDetail = productDetailRepository.findByProduct_ProductNumAndSizeAndColor(productNum, size, color)
-                .orElseThrow(() -> new EntityNotFoundException("ProductDetail not found with productNum: " + productNum + ", size: " + size + ", color: " + color));
+                .orElseThrow(() -> new BusinessException(ErrorCode.PRODUCT_NOT_FOUND));
 
         if (request.getColor() != null) {
             productDetail.setColor(request.getColor());
@@ -162,7 +164,7 @@ public class ProductDetailService {
     @Transactional
     public void deleteProductDetail(Long productNum, String size, String color) {
         ProductDetail productDetail = productDetailRepository.findByProduct_ProductNumAndSizeAndColor(productNum, size, color)
-                .orElseThrow(() -> new EntityNotFoundException("ProductDetail not found with productNum: " + productNum + ", size: " + size + ", color: " + color));
+                .orElseThrow(() -> new BusinessException(ErrorCode.USER_NOT_FOUND));
         productDetailRepository.delete(productDetail);
     }
 }

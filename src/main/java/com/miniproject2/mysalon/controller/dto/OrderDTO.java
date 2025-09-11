@@ -65,6 +65,26 @@ public class OrderDTO {
     @Builder
     @NoArgsConstructor
     @AllArgsConstructor
+    public static class OrderCompleteResponse {
+        private Long orderNum;
+        private String userName;
+        private LocalDateTime orderedAt;
+        private OrderStatus orderStatus;
+
+        public static OrderCompleteResponse fromEntity(Order order) {
+            return OrderCompleteResponse.builder()
+                    .orderNum(order.getOrderNum())
+                    .userName(order.getUser().getUserName())
+                    .orderedAt(order.getOrderedAt())
+                    .orderStatus(order.getStatus())
+                    .build();
+        }
+    }
+
+    @Data
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
     public static class OrderDetailResponse {
         private Long orderDetailNum;
         private Long productDetailNum;
@@ -78,6 +98,56 @@ public class OrderDTO {
                     .orderDetailNum(orderDetail.getOrderDetailNum())
                     .productDetailNum(orderDetail.getProductDetail().getProductDetailNum())
                     .productName(orderDetail.getProductDetail().getProduct().getProductName())
+                    .count(orderDetail.getCount())
+                    .price(orderDetail.getPrice())
+                    .orderStatus(orderDetail.getOrderStatus())
+                    .build();
+        }
+    }
+
+    @Data
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class OrderResponse2 {
+        private Long orderNum;
+        private Long userNum;
+        private LocalDateTime orderedAt;
+        private OrderStatus orderStatus;
+        private List<OrderListResponse> orderDetails;
+
+        public static OrderResponse2 fromEntity(Order order) {
+            return OrderResponse2.builder()
+                    .orderNum(order.getOrderNum())
+                    .userNum(order.getUser().getUserNum())
+                    .orderedAt(order.getOrderedAt())
+                    .orderStatus(order.getStatus())
+                    .orderDetails(order.getOrderProducts().stream()
+                            .map(OrderListResponse::fromEntity)
+                            .collect(Collectors.toList()))
+                    .build();
+        }
+    }
+
+    @Data
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class OrderListResponse {
+        private Long orderDetailNum;
+        private Long productDetailNum;
+        private String productName;
+        private String description;
+        private int count;
+        private Long price;
+        private OrderStatus orderStatus;
+
+        public static OrderListResponse fromEntity(OrderDetail orderDetail) {
+            return OrderListResponse.builder()
+                    .orderDetailNum(orderDetail.getOrderDetailNum())
+                    .productDetailNum(orderDetail.getProductDetail().getProductDetailNum())
+                    .productName(orderDetail.getProductDetail().getProduct().getProductName())
+                    .description(orderDetail.getProductDetail().getProduct().getDescription())
                     .count(orderDetail.getCount())
                     .price(orderDetail.getPrice())
                     .orderStatus(orderDetail.getOrderStatus())

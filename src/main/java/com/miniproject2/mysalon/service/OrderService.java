@@ -2,6 +2,8 @@ package com.miniproject2.mysalon.service;
 
 import com.miniproject2.mysalon.controller.dto.OrderDTO;
 import com.miniproject2.mysalon.entity.*;
+import com.miniproject2.mysalon.exception.BusinessException;
+import com.miniproject2.mysalon.exception.ErrorCode;
 import com.miniproject2.mysalon.repository.OrderDetailRepository;
 import com.miniproject2.mysalon.repository.OrderRepository;
 import com.miniproject2.mysalon.repository.ProductDetailRepository;
@@ -15,6 +17,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -29,7 +32,7 @@ public class OrderService {
     // Create
     public Long createOrder(OrderDTO.CreateOrderRequest request) {
         User user = userRepository.findById(request.getUserNum())
-                .orElseThrow(() -> new EntityNotFoundException("User not found"));
+                .orElseThrow(() -> new BusinessException(ErrorCode.USER_NOT_FOUND));
 
         Order order = Order.builder()
                 .user(user)
@@ -40,7 +43,7 @@ public class OrderService {
 
         for (OrderDTO.OrderItemDTO itemDto : request.getOrderItems()) {
             ProductDetail productDetail = productDetailRepository.findById(itemDto.getProductDetailNum())
-                    .orElseThrow(() -> new EntityNotFoundException("ProductDetail not found"));
+                    .orElseThrow(() -> new BusinessException(ErrorCode.PRODUCT_NOT_FOUND));
 
             OrderDetail orderDetail = OrderDetail.builder()
                     .order(order)
@@ -55,10 +58,46 @@ public class OrderService {
         return orderRepository.save(order).getOrderNum();
     }
 
+    public OrderDTO.OrderCompleteResponse createOrder2(OrderDTO.CreateOrderRequest request) {
+        User user = userRepository.findById(request.getUserNum())
+                .orElseThrow(() -> new BusinessException(ErrorCode.USER_NOT_FOUND));
+
+        Order order = Order.builder()
+                .user(user)
+                .orderedAt(LocalDateTime.now())
+                .status(OrderStatus.ORDERED)
+                .orderProducts(new ArrayList<>()) // 초기화
+                .build();
+
+        for (OrderDTO.OrderItemDTO itemDto : request.getOrderItems()) {
+            ProductDetail productDetail = productDetailRepository.findById(itemDto.getProductDetailNum())
+                    .orElseThrow(() -> new BusinessException(ErrorCode.PRODUCT_NOT_FOUND));
+
+            OrderDetail orderDetail = OrderDetail.builder()
+                    .order(order)
+                    .productDetail(productDetail)
+                    .count(itemDto.getCount())
+                    .price(productDetail.getProduct().getPrice()) // 현재 상품 가격으로 주문
+                    .orderStatus(OrderStatus.ORDERED)
+                    .build();
+            order.getOrderProducts().add(orderDetail);
+        }
+        Order savedOrder = orderRepository.save(order);
+        return OrderDTO.OrderCompleteResponse.fromEntity(savedOrder);
+    }
+
     // Read
     @Transactional(readOnly = true)
     public List<Order> getAllOrders() {
         return orderRepository.findAll();
+    }
+
+    public List<OrderDTO.OrderResponse2> getAllOrders2() {
+        List<Order> orders = orderRepository.findAll();
+        List<OrderDTO.OrderResponse2> response = orders.stream()
+                .map(OrderDTO.OrderResponse2::fromEntity)
+                .collect(Collectors.toList());
+        return response;
     }
 
     @Transactional(readOnly = true)
@@ -100,4 +139,7 @@ public class OrderService {
     public List<Order> searchOrdersByProductNum(Long productNum) {
         return orderRepository.findByProductNum(productNum);
     }
+
+
+
 }
