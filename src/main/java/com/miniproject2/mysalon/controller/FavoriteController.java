@@ -18,15 +18,15 @@ public class FavoriteController {
 
     // 찜 추가
     @PostMapping
-    public ResponseEntity<FavoriteDTO.Response> addFavorite(@RequestBody FavoriteDTO.Request request) {
-        FavoriteDTO.Response response = favoriteService.addFavorite(request);
+    public ResponseEntity<FavoriteDTO.ClickResponse> addFavorite(@RequestBody FavoriteDTO.FavoriteRequest favoriteRequest) {
+        FavoriteDTO.ClickResponse response = favoriteService.addFavorite(favoriteRequest);
         return ResponseEntity.ok(response);
     }
 
     // 찜 삭제
     @DeleteMapping
-    public ResponseEntity<Void> removeFavorite(@RequestBody FavoriteDTO.Request request) {
-        favoriteService.removeFavorite(request);
+    public ResponseEntity<Void> removeFavorite(@RequestBody FavoriteDTO.FavoriteRequest favoriteRequest) {
+        favoriteService.removeFavorite(favoriteRequest);
         return ResponseEntity.noContent().build();
     }
 

@@ -1,6 +1,7 @@
 package com.miniproject2.mysalon.controller.dto;
 
 import com.miniproject2.mysalon.entity.Favorite;
+import com.miniproject2.mysalon.entity.Product;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
@@ -10,7 +11,7 @@ public class FavoriteDTO {
     @NoArgsConstructor
     @AllArgsConstructor
     @Builder
-    public static class Request {
+    public static class FavoriteRequest {
 
         @NotNull(message = "사용자 번호는 필수 입력 항목입니다.")
         private Long userNum;
@@ -31,6 +32,22 @@ public class FavoriteDTO {
             return Response.builder()
                     .userNum(favorite.getUser().getUserNum())
                     .productNum(favorite.getProduct().getProductNum())
+                    .build();
+        }
+    }
+
+    @Data
+    @NoArgsConstructor
+    @AllArgsConstructor
+    @Builder
+    public static class ClickResponse {
+        private Long productNum;
+        private Long likeCount;
+
+        public static ClickResponse fromEntity(Product product) {
+            return ClickResponse.builder()
+                    .likeCount(product.getLikeCount())
+                    .productNum(product.getProductNum())
                     .build();
         }
     }

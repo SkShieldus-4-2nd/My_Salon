@@ -71,6 +71,7 @@ public class CreateProductDTO {
                     .mainImage(this.mainImage)
                     .description(this.description)
                     .gender(this.gender)
+                    .likeCount(0L)
                     .category(this.category)
                     .categoryLow(this.categoryLow)
                     .build();

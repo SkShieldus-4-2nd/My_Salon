@@ -88,8 +88,8 @@ public class OrderService {
         return orderRepository.findAll();
     }
 
-    public List<OrderDTO.OrderResponse2> getAllOrders2() {
-        List<Order> orders = orderRepository.findAll();
+    public List<OrderDTO.OrderResponse2> getAllOrders2(Long userId) {
+        List<Order> orders = orderRepository.findByUserUserNum(userId);
         List<OrderDTO.OrderResponse2> response = orders.stream()
                 .map(OrderDTO.OrderResponse2::fromEntity)
                 .collect(Collectors.toList());

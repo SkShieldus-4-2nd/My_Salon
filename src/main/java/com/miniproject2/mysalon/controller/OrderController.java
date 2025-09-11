@@ -36,9 +36,9 @@ public class OrderController {
         return ResponseEntity.ok(response);
     }
 
-    @GetMapping("/get")
-    public ResponseEntity<List<OrderDTO.OrderResponse2>> getAllOrders2() {
-        List<OrderDTO.OrderResponse2> orders = orderService.getAllOrders2();
+    @GetMapping("/{userId}")
+    public ResponseEntity<List<OrderDTO.OrderResponse2>> getAllOrdersByUser(@PathVariable Long userId) {
+        List<OrderDTO.OrderResponse2> orders = orderService.getAllOrders2(userId);
 
         return ResponseEntity.ok(orders);
     }

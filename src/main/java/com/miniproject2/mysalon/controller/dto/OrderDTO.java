@@ -44,14 +44,15 @@ public class OrderDTO {
     public static class OrderResponse {
         private Long orderNum;
         private Long userNum;
+        private String userName;
         private LocalDateTime orderedAt;
-        private OrderStatus orderStatus;
         private List<OrderDetailResponse> orderDetails;
 
         public static OrderResponse fromEntity(Order order) {
             return OrderResponse.builder()
                     .orderNum(order.getOrderNum())
                     .userNum(order.getUser().getUserNum())
+                    .userName(order.getUser().getUserName())
                     .orderedAt(order.getOrderedAt())
                     .orderDetails(order.getOrderProducts().stream()
                             .map(OrderDetailResponse::fromEntity)
@@ -68,7 +69,6 @@ public class OrderDTO {
         private Long orderNum;
         private String userName;
         private LocalDateTime orderedAt;
-        private OrderStatus orderStatus;
 
         public static OrderCompleteResponse fromEntity(Order order) {
             return OrderCompleteResponse.builder()
@@ -88,7 +88,6 @@ public class OrderDTO {
         private Long productDetailNum;
         private String productName;
         private int count;
-        private Long price;
         private OrderStatus orderStatus;
 
         public static OrderDetailResponse fromEntity(OrderDetail orderDetail) {
@@ -107,17 +106,10 @@ public class OrderDTO {
     @NoArgsConstructor
     @AllArgsConstructor
     public static class OrderResponse2 {
-        private Long orderNum;
-        private Long userNum;
-        private LocalDateTime orderedAt;
-        private OrderStatus orderStatus;
         private List<OrderListResponse> orderDetails;
 
         public static OrderResponse2 fromEntity(Order order) {
             return OrderResponse2.builder()
-                    .orderNum(order.getOrderNum())
-                    .userNum(order.getUser().getUserNum())
-                    .orderedAt(order.getOrderedAt())
                     .orderDetails(order.getOrderProducts().stream()
                             .map(OrderListResponse::fromEntity)
                             .collect(Collectors.toList()))
@@ -130,21 +122,20 @@ public class OrderDTO {
     @NoArgsConstructor
     @AllArgsConstructor
     public static class OrderListResponse {
+        private Long orderNum;//주문 번호
         private Long orderDetailNum;
-        private Long productDetailNum;
         private String productName;
         private String description;
-        private int count;
         private Long price;
         private OrderStatus orderStatus;
 
         public static OrderListResponse fromEntity(OrderDetail orderDetail) {
             return OrderListResponse.builder()
+                    .orderNum(orderDetail.getOrder().getOrderNum())
                     .orderDetailNum(orderDetail.getOrderDetailNum())
-                    .productDetailNum(orderDetail.getProductDetail().getProductDetailNum())
                     .productName(orderDetail.getProductDetail().getProduct().getProductName())
                     .description(orderDetail.getProductDetail().getProduct().getDescription())
-                    .count(orderDetail.getCount())
+                    .price(orderDetail.getProductDetail().getProduct().getPrice())
                     .orderStatus(orderDetail.getOrderStatus())
                     .build();
         }
