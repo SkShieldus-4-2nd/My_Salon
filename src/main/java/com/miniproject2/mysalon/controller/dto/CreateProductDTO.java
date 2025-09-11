@@ -1,6 +1,7 @@
 package com.miniproject2.mysalon.controller.dto;
 
 import com.miniproject2.mysalon.entity.*;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Positive;
 import lombok.*;
 
@@ -18,8 +19,12 @@ public class CreateProductDTO {
     public static class ProductRequest {
         @Positive
         private Long userNum;
+        @NotBlank(message = "상품 이름은 필수입니다.")
         private String productName;
+        @NotBlank(message = "가격은 필수입니다.")
         private Long price;
+        @NotBlank(message = "배송비는 필수입니다.")
+        private Long deliveryFee;
         private String mainImage;
         private String description;
         private Gender gender;
@@ -30,6 +35,7 @@ public class CreateProductDTO {
 
         public static ProductDTO fromEntity(Product product, User user) {
             return ProductDTO.builder()
+
                     .productNum(product.getProductNum())
                     .userNum(product.getUser().getUserNum())
                     .productName(product.getProductName())
@@ -47,7 +53,18 @@ public class CreateProductDTO {
 
         // DTO -> Entity
         public Product toEntity(User user) {
+
+            if (this.category == null) {
+                this.category = Category.ALL;
+            }
+            if (this.categoryLow == null) {
+                this.categoryLow = CategoryLow.ALL;
+            }
+            if (this.gender == null) {
+                this.gender = Gender.ALL;
+            }
             Product product = Product.builder()
+                    .deliveryPrice(this.deliveryFee)
                     .user(user)
                     .productName(this.productName)
                     .price(this.price)
@@ -75,19 +92,15 @@ public class CreateProductDTO {
     @Builder
     public static class ProductDetailDTO2 {
 
-        private Long productNum;
         private String color;
         private String size;
-        private String image;
-        private int count; // stock -> count
+        private int count;
 
 
         public static ProductDetailDTO2 fromEntity(ProductDetail entity) {
             return new ProductDetailDTO2(
-                    entity.getProduct().getProductNum(),
                     entity.getColor(),
                     entity.getSize(),
-                    entity.getImage(),
                     entity.getCount() // getStock() -> getCount()
 
             );
@@ -98,10 +111,11 @@ public class CreateProductDTO {
                     .color(dto.getColor())
                     .size(dto.getSize())
                     .count(dto.getCount())
-                    .image(dto.getImage())
                     .product(product)
                     .build();
         }
     }
+
+
 
 }

@@ -85,9 +85,20 @@ public class ProductService {
         return ProductDTO.fromEntity(updatedProduct);
     }
 
+    public ProductDTO editProduct2(Long productId, CreateProductDTO.ProductRequest request) {
+        Product existingProduct = productRepository.findById(productId)
+                .orElseThrow(() -> new BusinessException(ErrorCode.PRODUCT_NOT_FOUND));
+
+        User user = userRepository.findById(request.getUserNum())
+                    .orElseThrow(() -> new BusinessException(ErrorCode.USER_NOT_FOUND));
+        deleteProduct(productId);
+        return createProduct2(request);
+
+    }
+
     public void deleteProduct(Long productId) {
         Product product = productRepository.findById(productId)
-                .orElseThrow(() -> new EntityNotFoundException("Product", productId));
+                .orElseThrow(() -> new BusinessException(ErrorCode.PRODUCT_NOT_FOUND));
         productRepository.delete(product);
     }
 
@@ -131,4 +142,7 @@ public class ProductService {
     }
 
 
+    public List<ProductDTO> getAllProductsByUser(Long userId) {
+        return productRepository.findByUserUserNum(userId).stream().map(ProductDTO::fromEntity).toList();
+    }
 }

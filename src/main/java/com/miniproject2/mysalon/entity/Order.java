@@ -30,9 +30,6 @@ public class Order {
     @Column(name = "ordered_at", updatable = false)
     private LocalDateTime orderedAt;
 
-    @Enumerated(EnumType.STRING)
-    private OrderStatus status;
-
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_num")
     private User user;

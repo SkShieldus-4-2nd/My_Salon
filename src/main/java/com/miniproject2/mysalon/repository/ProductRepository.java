@@ -19,6 +19,6 @@ public interface ProductRepository extends JpaRepository<Product, Long>, JpaSpec
     List<Product> findByGender(Gender gender);
 
     List<Product> findByCategoryAndCategoryLow(Category category, CategoryLow categoryLow);
-
+    List<Product> findByUserUserNum(Long userNum);
     List<Product> findByUser(User user);
 }

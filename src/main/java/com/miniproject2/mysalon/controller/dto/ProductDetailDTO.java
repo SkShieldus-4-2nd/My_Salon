@@ -40,7 +40,8 @@ public class ProductDetailDTO {
                 this.color,
                 this.count, // stock -> count
                 this.image,
-                product
+                product,
+                null
         );
     }
 

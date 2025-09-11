@@ -53,7 +53,6 @@ public class OrderDTO {
                     .orderNum(order.getOrderNum())
                     .userNum(order.getUser().getUserNum())
                     .orderedAt(order.getOrderedAt())
-                    .orderStatus(order.getStatus())
                     .orderDetails(order.getOrderProducts().stream()
                             .map(OrderDetailResponse::fromEntity)
                             .collect(Collectors.toList()))
@@ -76,7 +75,6 @@ public class OrderDTO {
                     .orderNum(order.getOrderNum())
                     .userName(order.getUser().getUserName())
                     .orderedAt(order.getOrderedAt())
-                    .orderStatus(order.getStatus())
                     .build();
         }
     }
@@ -99,7 +97,6 @@ public class OrderDTO {
                     .productDetailNum(orderDetail.getProductDetail().getProductDetailNum())
                     .productName(orderDetail.getProductDetail().getProduct().getProductName())
                     .count(orderDetail.getCount())
-                    .price(orderDetail.getPrice())
                     .orderStatus(orderDetail.getOrderStatus())
                     .build();
         }
@@ -121,7 +118,6 @@ public class OrderDTO {
                     .orderNum(order.getOrderNum())
                     .userNum(order.getUser().getUserNum())
                     .orderedAt(order.getOrderedAt())
-                    .orderStatus(order.getStatus())
                     .orderDetails(order.getOrderProducts().stream()
                             .map(OrderListResponse::fromEntity)
                             .collect(Collectors.toList()))
@@ -149,7 +145,6 @@ public class OrderDTO {
                     .productName(orderDetail.getProductDetail().getProduct().getProductName())
                     .description(orderDetail.getProductDetail().getProduct().getDescription())
                     .count(orderDetail.getCount())
-                    .price(orderDetail.getPrice())
                     .orderStatus(orderDetail.getOrderStatus())
                     .build();
         }
