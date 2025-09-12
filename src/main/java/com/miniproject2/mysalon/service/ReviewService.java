@@ -1,7 +1,6 @@
 package com.miniproject2.mysalon.service;
 
 import com.miniproject2.mysalon.controller.dto.ReviewDTO;
-import com.miniproject2.mysalon.entity.Product;
 import com.miniproject2.mysalon.entity.ProductDetail;
 import com.miniproject2.mysalon.entity.Review;
 import com.miniproject2.mysalon.entity.User;
@@ -24,13 +23,13 @@ public class ReviewService {
     private final UserRepository userRepository;
     private final ProductDetailRepository productDetailRepository;
 
+    //리뷰 생성
     @Transactional
     public ReviewDTO.Response createReview(ReviewDTO.Request request) {
         User user = userRepository.findById(request.getUserNum())
                 .orElseThrow(() -> new IllegalArgumentException("User not found"));
         ProductDetail productDetail = productDetailRepository.findById(request.getProductDetailNum())
                 .orElseThrow(() -> new IllegalArgumentException("Product detail not found"));
-        Product product = productDetail.getProduct();
 
         Review review = Review.builder()
                 .user(user)
@@ -38,9 +37,6 @@ public class ReviewService {
                 .text(request.getText())
                 .score(request.getScore())
                 .reviewImage(request.getReviewImage())
-                .productName(product.getProductName()) // 추가
-                .size(productDetail.getSize())         // 추가
-                .color(productDetail.getColor())       // 추가
                 .build();
 
         Review savedReview = reviewRepository.save(review);

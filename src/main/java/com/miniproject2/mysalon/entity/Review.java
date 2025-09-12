@@ -39,16 +39,6 @@ public class Review {
     @Column(nullable = true)
     private String reviewImage;
 
-    // 새로 추가된 컬럼
-    @Column(nullable = false)
-    private String productName;
-
-    @Column(nullable = false)
-    private String size;
-
-    @Column(nullable = false)
-    private String color;
-
     @CreationTimestamp
     @Column(updatable = false)
     private LocalDateTime createdAt;
