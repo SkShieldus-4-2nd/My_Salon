@@ -44,6 +44,9 @@ public class ReviewDTO {
         private Long reviewNum;
         private Long userNum;
         private Long productNum;
+        private String productName; // 추가
+        private String size;        // 추가
+        private String color;       // 추가
         private String text;
         private Short score;
         private String reviewImage;
@@ -54,7 +57,10 @@ public class ReviewDTO {
             return Response.builder()
                     .reviewNum(review.getReviewNum())
                     .userNum(review.getUser().getUserNum())
-                    .productNum(review.getProductDetail().getProductDetailNum())
+                    .productNum(review.getProductDetail().getProduct().getProductNum())
+                    .productName(review.getProductDetail().getProduct().getProductName()) // 추가
+                    .size(review.getProductDetail().getSize())                              // 추가
+                    .color(review.getProductDetail().getColor())                            // 추가
                     .text(review.getText())
                     .score(review.getScore())
                     .reviewImage(review.getReviewImage())
@@ -63,5 +69,6 @@ public class ReviewDTO {
                     .build();
         }
     }
+
 
 }
