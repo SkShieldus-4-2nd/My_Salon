@@ -28,17 +28,4 @@ public class ShoppingCart {
 
     @Column(nullable = false)
     private boolean isSelected = true;
-
-    // 새로 추가
-    private String productName;
-
-
-    private int productPrice;
-
-
-    private String size;
-
-
-    private String color;
-
 }

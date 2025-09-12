@@ -27,23 +27,22 @@ public class ShoppingCartService {
                 .orElseThrow(() -> new RuntimeException("User not found"));
         ProductDetail productDetail = productDetailRepository.findById(request.getProductDetailNum())
                 .orElseThrow(() -> new RuntimeException("ProductDetail not found"));
-        Product product = productDetail.getProduct();
 
         ShoppingCartKey key = new ShoppingCartKey(request.getUserNum(), request.getProductDetailNum());
+
         ShoppingCart cart = new ShoppingCart();
         cart.setId(key);
         cart.setUser(user);
         cart.setProductDetail(productDetail);
         cart.setCount(request.getCount());
         cart.setSelected(true);
-        cart.setProductName(product.getProductName());
-        cart.setProductPrice(Math.toIntExact(product.getPrice()));
-        cart.setSize(productDetail.getSize());
-        cart.setColor(productDetail.getColor());
 
         ShoppingCart savedCart = shoppingCartRepository.save(cart);
+
+        // ✅ DTO 변환 시 productName, productPrice, size, color 자동 채워짐
         return ShoppingCartDTO.Response.fromEntity(savedCart);
     }
+
 
     // 장바구니 물건 삭제
     public void removeFromCart(ShoppingCartDTO.Request request) {
@@ -51,15 +50,17 @@ public class ShoppingCartService {
         shoppingCartRepository.deleteById(key);
     }
 
-    // 유저 장바구니 로드 (DTO 반환)
     @Transactional(readOnly = true)
     public List<ShoppingCartDTO.Response> getUserCartDTO(Long userNum) {
-        User user = userRepository.findById(userNum).orElseThrow();
+        User user = userRepository.findById(userNum)
+                .orElseThrow(() -> new RuntimeException("User not found"));
         List<ShoppingCart> cartItems = shoppingCartRepository.findByUser(user);
+
         return cartItems.stream()
-                .map(ShoppingCartDTO.Response::fromEntity)
+                .map(ShoppingCartDTO.Response::fromEntity) // ✅ 여기서 productName 등 채워짐
                 .toList();
     }
+
 
     // 장바구니 선택 변경
     @Transactional
@@ -73,18 +74,20 @@ public class ShoppingCartService {
         return ShoppingCartDTO.Response.fromEntity(savedCart);
     }
 
-    // 총 가격 계산
+    // ✅ 총 가격 계산
     @Transactional(readOnly = true)
     public Long calculateTotalPrice(Long userNum) {
         User user = userRepository.findById(userNum)
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
         List<ShoppingCart> cartItems = shoppingCartRepository.findByUser(user);
+
         return cartItems.stream()
                 .filter(ShoppingCart::isSelected)
-                .mapToLong(item -> item.getProductPrice() * item.getCount())
+                .mapToLong(item -> item.getProductDetail().getProduct().getPrice() * item.getCount()) // ✅ Product에서 가격 가져오기
                 .sum();
     }
+
 
     // 수량 변경
     public ShoppingCartDTO.Response updateItemCount(Long userNum, Long productDetailNum, int count) {

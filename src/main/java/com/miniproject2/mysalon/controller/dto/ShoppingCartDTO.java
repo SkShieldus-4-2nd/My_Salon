@@ -24,6 +24,7 @@ public class ShoppingCartDTO {
         private Long userNum;
         private Long productDetailNum;
         private String productName;
+        private String productImage;
         private Long productPrice;
         private String size;
         private String color;
@@ -35,6 +36,7 @@ public class ShoppingCartDTO {
                     .userNum(cart.getUser().getUserNum())
                     .productDetailNum(cart.getProductDetail().getProductDetailNum())
                     .productName(cart.getProductDetail().getProduct().getProductName())
+                    .productImage(cart.getProductDetail().getProduct().getMainImage())
                     .productPrice(cart.getProductDetail().getProduct().getPrice())
                     .size(cart.getProductDetail().getSize())
                     .color(cart.getProductDetail().getColor())
