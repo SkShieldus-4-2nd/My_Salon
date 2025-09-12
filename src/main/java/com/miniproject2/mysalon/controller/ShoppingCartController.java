@@ -17,15 +17,15 @@ public class ShoppingCartController {
 
     private final ShoppingCartService shoppingCartService;
 
-    // 1. 장바구니에 상품 추가
+    // 장바구니에 상품 추가
     @PostMapping
     public ResponseEntity<ShoppingCartDTO.Response> addToCart(
             @RequestBody @Valid ShoppingCartDTO.Request request) {
-        ShoppingCart cart = shoppingCartService.addToCart(request);
-        return ResponseEntity.ok(ShoppingCartDTO.Response.fromEntity(cart));
+        ShoppingCartDTO.Response response = shoppingCartService.addToCart(request);
+        return ResponseEntity.ok(response);
     }
 
-    // 2. 장바구니에서 상품 삭제
+    // 장바구니에서 상품 삭제
     @DeleteMapping
     public ResponseEntity<Void> removeFromCart(
             @RequestBody @Valid ShoppingCartDTO.Request request) {
@@ -33,41 +33,40 @@ public class ShoppingCartController {
         return ResponseEntity.noContent().build();
     }
 
-    // 3. 유저별 장바구니 조회 (Optional)
+    // 장바구니 불러오기
     @GetMapping("/{userNum}")
-    public ResponseEntity<List<ShoppingCartDTO.Response>> getUserCart(@PathVariable Long userNum) {
-        List<ShoppingCart> carts = shoppingCartService.getUserCart(userNum);
-        List<ShoppingCartDTO.Response> responses = carts.stream()
-                .map(ShoppingCartDTO.Response::fromEntity)
-                .toList();
-        return ResponseEntity.ok(responses);
+    public ResponseEntity<List<ShoppingCartDTO.Response>> getCart(@PathVariable Long userNum) {
+        List<ShoppingCartDTO.Response> cartDTOs = shoppingCartService.getUserCartDTO(userNum);
+        return ResponseEntity.ok(cartDTOs);
     }
 
-    // 4. 장바구니 물건 체크 변경 기능
+    // 장바구니 선택 변경
     @PatchMapping("/selection")
-    public ResponseEntity<ShoppingCart> updateCartSelection(
+    public ResponseEntity<ShoppingCartDTO.Response> updateCartSelection(
             @RequestParam Long userNum,
             @RequestParam Long productDetailNum,
             @RequestParam boolean isSelected) {
-        ShoppingCart updatedCart = shoppingCartService.updateSelection(userNum, productDetailNum, isSelected);
-        return ResponseEntity.ok(updatedCart);
+        ShoppingCartDTO.Response response =
+                shoppingCartService.updateSelection(userNum, productDetailNum, isSelected);
+        return ResponseEntity.ok(response);
     }
 
-    // 5. 장바구니에서 선택된 물건들의 총 가격 표시
+    // 총합 가격
     @GetMapping("/total")
     public ResponseEntity<Long> getTotalPrice(@RequestParam Long userNum) {
         Long totalPrice = shoppingCartService.calculateTotalPrice(userNum);
         return ResponseEntity.ok(totalPrice);
     }
 
+    // 수량 변경
     @PatchMapping("/update-count")
-    public ResponseEntity<ShoppingCart> updateItemCount(
+    public ResponseEntity<ShoppingCartDTO.Response> updateItemCount(
             @RequestParam Long userNum,
             @RequestParam Long productDetailNum,
             @RequestParam int count) {
-
-        ShoppingCart updatedCart = shoppingCartService.updateItemCount(userNum, productDetailNum, count);
-        return ResponseEntity.ok(updatedCart);
+        ShoppingCartDTO.Response response =
+                shoppingCartService.updateItemCount(userNum, productDetailNum, count);
+        return ResponseEntity.ok(response);
     }
 
 }
