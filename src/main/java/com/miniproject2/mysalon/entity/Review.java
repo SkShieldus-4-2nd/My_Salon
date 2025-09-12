@@ -23,7 +23,6 @@ public class Review {
     @Column(name = "review_num")
     private Long reviewNum;
 
-
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_num")
     private User user;
@@ -31,7 +30,6 @@ public class Review {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "product_detail_num")
     private ProductDetail productDetail;
-
 
     private String text;
 
@@ -41,12 +39,20 @@ public class Review {
     @Column(nullable = true)
     private String reviewImage;
 
+    // 새로 추가된 컬럼
+    @Column(nullable = false)
+    private String productName;
+
+    @Column(nullable = false)
+    private String size;
+
+    @Column(nullable = false)
+    private String color;
+
     @CreationTimestamp
     @Column(updatable = false)
     private LocalDateTime createdAt;
 
     @UpdateTimestamp
     private LocalDateTime updatedAt;
-
-
 }
