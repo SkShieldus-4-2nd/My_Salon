@@ -21,6 +21,12 @@ public enum CategoryLow {
     JACKET(Category.OUTERWEAR),
     COAT(Category.OUTERWEAR),
 
+    //BOTTOM
+    SHORTS(Category.BOTTOM),
+    JEANS(Category.BOTTOM),
+    SLACKS(Category.BOTTOM),
+
+
     // DRESS/SKIRT
     MINI(Category.DRESS_SKIRT),
     MIDI(Category.DRESS_SKIRT),
