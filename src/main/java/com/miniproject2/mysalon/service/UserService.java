@@ -9,6 +9,7 @@ import com.miniproject2.mysalon.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 //import org.springframework.security.crypto.password.PasswordEncoder;
 //import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -17,16 +18,17 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 @Transactional
-public class UserService {
+public class UserService  {
 
     private final UserRepository userRepository;
-    //private final PasswordEncoder passwordEncoder; // 추가
+    private final PasswordEncoder passwordEncoder;
+
 
     // 유저 생성
     public UserDTO.Response createUser(UserDTO.Request request) {
         // 비밀번호 암호화
-        //String encodedPassword = passwordEncoder.encode(request.getPassword());
-        //String encodedSecondPassword = passwordEncoder.encode(request.getSecondPassword());
+        String encodedPassword = passwordEncoder.encode(request.getPassword());
+        String encodedSecondPassword = passwordEncoder.encode(request.getSecondPassword());
         if (userRepository.existsById(request.getId())) {
             throw new BusinessException(ErrorCode.USER_ID_DUPLICATE);
         }
@@ -36,9 +38,9 @@ public class UserService {
 
         User user = User.builder()
                 .id(request.getId())
-                .password(request.getPassword())
+                .password(encodedPassword)
                 .userName(request.getUserName())
-                .secondPassword(request.getSecondPassword())
+                .secondPassword(encodedSecondPassword)
                 .gender(request.getGender())
                 .tall(request.getTall())
                 .weight(request.getWeight())
@@ -52,7 +54,9 @@ public class UserService {
     public UserDTO.Response editUser(Long userNum, UserDTO.Request request) {
         User user = userRepository.findById(userNum)
                 .orElseThrow(() -> new BusinessException(ErrorCode.USER_NOT_FOUND));
-
+        user.setId(request.getId());
+        user.setPassword(request.getPassword());
+        user.setGender(request.getGender());
         user.setUserName(request.getUserName());
         user.setProfileImage(request.getProfileImage());
         user.setTall(request.getTall());
@@ -60,27 +64,27 @@ public class UserService {
         user.setType(request.getType());
         user.setStoreName(request.getStoreName());
 
-       /* // 비밀번호가 null이 아니면 암호화 후 업데이트
+        // 비밀번호가 null이 아니면 암호화 후 업데이트
         if (request.getPassword() != null && !request.getPassword().isEmpty()) {
             user.setPassword(passwordEncoder.encode(request.getPassword()));
         }
 
         if (request.getSecondPassword() != null && !request.getSecondPassword().isEmpty()) {
             user.setSecondPassword(passwordEncoder.encode(request.getSecondPassword()));
-        }*/
+        }
 
         return UserDTO.Response.fromEntity(userRepository.save(user));
     }
 
     // 유저 삭제
     public void deleteUser(Long userNum) {
-        if (!userRepository.existsById(userNum)) {
+        if (!userRepository.existsByUserNum(userNum)) {
             throw new BusinessException(ErrorCode.USER_NOT_FOUND);
         }
         userRepository.deleteById(userNum);
     }
 
-
+    @Transactional(readOnly = true)
     public List<UserDTO.Response> getAllUsers() {
         return userRepository.findAll()
                 .stream()
@@ -94,5 +98,6 @@ public class UserService {
                 .orElseThrow(() -> new BusinessException(ErrorCode.USER_NOT_FOUND));
         return UserDTO.Response.fromEntity(user);
     }
+
 
 }

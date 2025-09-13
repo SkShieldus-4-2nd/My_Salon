@@ -27,6 +27,7 @@ public class PostLikeService {
     private final UserRepository userRepository;
     private final PostRepository postRepository;
 
+
     public PostDTO.SimpleCoordiPost clickPost(PostLikeDTO.ClickRequest request, Long userId) {
 
         Post post = postRepository.findById(request.getPostNum())
@@ -51,7 +52,7 @@ public class PostLikeService {
             post.setLikeCount(post.getLikeCount()-1);
             postLikeRepository.delete(postLike.get());
         }
-        return PostDTO.SimpleCoordiPost.fromEntity(post);
+        return fromEntity(post);
 
     }
 
@@ -62,5 +63,15 @@ public class PostLikeService {
             throw new BusinessException(ErrorCode.POST_TYPE_WRONG);
         }
         return postLikeRepository.existsById(new PostLikeId(userId, postId));
+    }
+
+    public PostDTO.SimpleCoordiPost fromEntity(Post post) {
+        return PostDTO.SimpleCoordiPost.builder()
+                .coordiImage(post.getImage())
+                .title(post.getTitle())
+                .writer(post.getUser().getUserName())
+                .likeCount(post.getLikeCount())
+                .isLiked(isPostLikedByUser(post.getPostNum(), post.getUser().getUserNum()))
+                .build();
     }
 }

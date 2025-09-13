@@ -1,10 +1,18 @@
 package com.miniproject2.mysalon.controller;
 
 import com.miniproject2.mysalon.controller.dto.UserDTO;
+import com.miniproject2.mysalon.security.CurrentUser;
+import com.miniproject2.mysalon.security.jwt.JwtService;
 import com.miniproject2.mysalon.service.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -15,7 +23,12 @@ import java.util.List;
 public class UserController {
 
     private final UserService userService;
-
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+    @Autowired
+    private AuthenticationManager authenticationManager;
+    @Autowired
+    private JwtService jwtService;
     // ✅ 유저 생성
     @PostMapping
     public ResponseEntity<UserDTO.Response> createUser(@Valid @RequestBody UserDTO.Request request) {
@@ -23,9 +36,9 @@ public class UserController {
     }
 
     // ✅ 유저 수정
-    @PutMapping("/{userNum}")
+    @PutMapping("/edit-profile")
     public ResponseEntity<UserDTO.Response> editUser(
-            @PathVariable Long userNum,
+            @CurrentUser Long userNum,
             @Valid @RequestBody UserDTO.Request request
     ) {
         return ResponseEntity.ok(userService.editUser(userNum, request));
@@ -50,4 +63,28 @@ public class UserController {
         UserDTO.Response userResponse = userService.getUserByUserNum(userNum);
         return ResponseEntity.ok(userResponse);
     }
+
+    // ✅ 로그인한 유저의 정보 조회
+    @GetMapping("/user-info")
+    public ResponseEntity<UserDTO.Response> getUserInfo(@CurrentUser Long userNum) {
+        UserDTO.Response userResponse = userService.getUserByUserNum(userNum);
+        return ResponseEntity.ok(userResponse);
+    }
+
+    //jwt 토큰 생성
+    @PostMapping("/login")
+    public String authenticateAndGetToken(@RequestBody UserDTO.LoginRequest authRequest) {
+        Authentication authentication = authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(
+                        authRequest.getId(),
+                        authRequest.getPassword()
+                ));
+        if (authentication.isAuthenticated()) {
+            return jwtService.generateToken(authRequest.getId());
+        } else {
+            throw new UsernameNotFoundException("invalid user request !");
+        }
+    }
+
+
 }

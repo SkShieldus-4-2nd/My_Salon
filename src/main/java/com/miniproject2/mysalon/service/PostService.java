@@ -29,11 +29,13 @@ public class PostService {
 
     private final PostRepository postRepository;
     private final UserRepository userRepository;
+    private final PostLikeRepository postLikeRepository;
+    private final PostLikeService postLikeService;
 
 
-    public PostDTO.Response createPost(PostDTO.PostRequest request) {
+    public PostDTO.Response createPost(Long userNum, PostDTO.PostRequest request) {
 
-        User user = userRepository.findById(request.getUserNum())
+        User user = userRepository.findById(userNum)
                 .orElseThrow(() -> new BusinessException(ErrorCode.USER_NOT_FOUND));
 
         Post post = Post.builder()
@@ -49,9 +51,9 @@ public class PostService {
         return PostDTO.Response.fromEntity(saved);
     }
 
-    public PostDTO.Response createCoordiPost(PostDTO.PostRequest request) {
+    public PostDTO.Response createCoordiPost(Long userNum,PostDTO.PostRequest request) {
 
-        User user = userRepository.findById(request.getUserNum())
+        User user = userRepository.findById(userNum)
                 .orElseThrow(() -> new BusinessException(ErrorCode.USER_NOT_FOUND));
 
         Post post = Post.builder()
@@ -76,12 +78,25 @@ public class PostService {
 
     }
 
-    public List<PostDTO.SimpleCoordiPost> getAllCoordiPosts() {
+    public List<PostDTO.SimpleCoordiPost> getAllCoordiPosts(Long userNum) {
+        User user = userRepository.findById(userNum)
+                .orElseThrow(() -> new BusinessException(ErrorCode.USER_NOT_FOUND));
         return  postRepository.findPostsByPostTypeJPQL(PostType.COORDI)
                 .stream()
-                .map(PostDTO.SimpleCoordiPost::fromEntity)
+                .map(this::fromEntity)
                 .toList();
 
+    }
+
+    public PostDTO.SimpleCoordiPost fromEntity(Post post) {
+        return PostDTO.SimpleCoordiPost.builder()
+                .postNum(post.getPostNum())
+                .coordiImage(post.getImage())
+                .title(post.getTitle())
+                .writer(post.getUser().getUserName())
+                .likeCount(post.getLikeCount())
+                .isLiked(postLikeService.isPostLikedByUser(post.getPostNum(), post.getUser().getUserNum()))
+                .build();
     }
 
     public List<PostDTO.SimpleCoordiPost> getHotCoordiPosts() {
@@ -89,7 +104,7 @@ public class PostService {
         Pageable top10 = PageRequest.of(0,10, Sort.by("likeCount").descending());
         return postRepository.findTop10ByLikeCountDesc(top10)
                 .stream()
-                .map(PostDTO.SimpleCoordiPost::fromEntity)
+                .map(this::fromEntity)
                 .toList();
     }
 

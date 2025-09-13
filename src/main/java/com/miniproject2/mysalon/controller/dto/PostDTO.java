@@ -16,8 +16,6 @@ public class PostDTO {
     @Builder
     public static class PostRequest {
 
-        @NotNull(message = "작성자 번호는 필수 입력 항목입니다.")
-        private Long userNum;
 
         @NotBlank(message = "제목은 필수 입력 항목입니다.")
         private String title;
@@ -34,7 +32,7 @@ public class PostDTO {
     @AllArgsConstructor
     @Builder
     public static class Response {
-
+        private Long postId;
         private String title;
         private String text;
         private Long likeCount;
@@ -44,6 +42,7 @@ public class PostDTO {
 
         public static Response fromEntity(Post post) {
             return Response.builder()
+                    .postId(post.getPostNum())
                     .title(post.getTitle())
                     .text(post.getText())
                     .likeCount(post.getLikeCount())
@@ -82,20 +81,15 @@ public class PostDTO {
     @AllArgsConstructor
     @Builder
     public static class SimpleCoordiPost {
+        private Long postNum;
         private String coordiImage;
         private String title;
         private String writer;
         private String userImage;
         private Long likeCount;
+        private boolean isLiked;
 
-        public static SimpleCoordiPost fromEntity(Post post) {
-            return SimpleCoordiPost.builder()
-                    .coordiImage(post.getImage())
-                    .title(post.getTitle())
-                    .writer(post.getUser().getUserName())
-                    .likeCount(post.getLikeCount())
-                    .build();
-        }
+
     }
 
     @Data

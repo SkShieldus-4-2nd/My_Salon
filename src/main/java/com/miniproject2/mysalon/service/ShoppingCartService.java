@@ -2,6 +2,8 @@ package com.miniproject2.mysalon.service;
 
 import com.miniproject2.mysalon.controller.dto.ShoppingCartDTO;
 import com.miniproject2.mysalon.entity.*;
+import com.miniproject2.mysalon.exception.BusinessException;
+import com.miniproject2.mysalon.exception.ErrorCode;
 import com.miniproject2.mysalon.repository.ProductDetailRepository;
 import com.miniproject2.mysalon.repository.ShoppingCartRepository;
 import com.miniproject2.mysalon.repository.UserRepository;
@@ -22,23 +24,24 @@ public class ShoppingCartService {
     private final ProductDetailRepository productDetailRepository;
 
     // 장바구니 물건 추가
-    public ShoppingCart addToCart(ShoppingCartDTO.Request request) {
-        User user = userRepository.findById(request.getUserNum()).orElseThrow();
-        ProductDetail productDetail = productDetailRepository.findById(request.getProductDetailNum()).orElseThrow();
+    public ShoppingCart addToCart(Long userNum, ShoppingCartDTO.CartRequest cartRequest) {
+        User user = userRepository.findById(userNum).orElseThrow(() -> new BusinessException(ErrorCode.USER_NOT_FOUND));
+        ProductDetail productDetail = productDetailRepository.findById(cartRequest.getProductDetailNum()).orElseThrow(() -> new BusinessException(ErrorCode.PRODUCT_NOT_FOUND));
 
-        ShoppingCartKey key = new ShoppingCartKey(request.getUserNum(), request.getProductDetailNum());
+        ShoppingCartKey key = new ShoppingCartKey(userNum, cartRequest.getProductDetailNum());
         ShoppingCart cart = new ShoppingCart();
         cart.setId(key);
         cart.setUser(user);
         cart.setProductDetail(productDetail);
-        cart.setCount(request.getCount());
+        cart.setCount(cartRequest.getCount());
+        cart.setSelected(cartRequest.isSelected());
 
         return shoppingCartRepository.save(cart);
     }
 
     // 장바구니 물건 삭제
-    public void removeFromCart(ShoppingCartDTO.Request request) {
-        ShoppingCartKey key = new ShoppingCartKey(request.getUserNum(), request.getProductDetailNum());
+    public void removeFromCart(ShoppingCartDTO.CartRequest cartRequest, Long userNum) {
+        ShoppingCartKey key = new ShoppingCartKey(userNum, cartRequest.getProductDetailNum());
         shoppingCartRepository.deleteById(key);
     }
 
@@ -50,7 +53,7 @@ public class ShoppingCartService {
     }
 
     //장바구니 선택 변경
-    @Transactional
+
     public ShoppingCart updateSelection(Long userNum, Long productDetailNum, boolean isSelected) {
         ShoppingCartKey key = new ShoppingCartKey(userNum, productDetailNum);
         ShoppingCart cart = shoppingCartRepository.findById(key)

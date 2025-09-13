@@ -2,29 +2,40 @@ package com.miniproject2.mysalon.controller;
 
 import com.miniproject2.mysalon.controller.dto.OrderDTO;
 import com.miniproject2.mysalon.entity.Order;
+import com.miniproject2.mysalon.security.CurrentUser;
 import com.miniproject2.mysalon.service.OrderService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
 @RestController
-@RequestMapping("/orders")
+@RequestMapping("/api/orders")
 @RequiredArgsConstructor
 public class OrderController {
 
     private final OrderService orderService;
 
     @PostMapping
-    public ResponseEntity<Long> createOrder(@RequestBody OrderDTO.CreateOrderRequest request) {
-        return ResponseEntity.ok(orderService.createOrder(request));
+    @PreAuthorize("hasAuthority('SELLER') or hasAuthority('BUYER')")
+    public ResponseEntity<Long> createOrder(@CurrentUser Long userNum, @RequestBody OrderDTO.CreateOrderRequest request) {
+        return ResponseEntity.ok(orderService.createOrder(request, userNum));
     }
 
     @PostMapping("/create")
-    public ResponseEntity<OrderDTO.OrderCompleteResponse> createOrder2(@RequestBody OrderDTO.CreateOrderRequest request) {
-        return ResponseEntity.ok(orderService.createOrder2(request));
+    @PreAuthorize("hasAuthority('SELLER') or hasAuthority('BUYER')")
+    public ResponseEntity<OrderDTO.OrderCompleteResponse> createOrder2(@CurrentUser Long userNum, @RequestBody OrderDTO.CreateOrderRequest request) {
+        return ResponseEntity.ok(orderService.createOrder2(request, userNum));
+    }
+
+    @GetMapping("/count")
+    @PreAuthorize("hasAuthority('SELLER') or hasAuthority('BUYER')")
+    public ResponseEntity<Long> getOrdersCount(@CurrentUser Long userNum) {
+        Long count = orderService.getOrdersCount(userNum);
+        return ResponseEntity.ok(count);
     }
 
     @GetMapping
@@ -36,15 +47,17 @@ public class OrderController {
         return ResponseEntity.ok(response);
     }
 
-    @GetMapping("/{userId}")
-    public ResponseEntity<List<OrderDTO.OrderResponse2>> getAllOrdersByUser(@PathVariable Long userId) {
+    @GetMapping("/user/")
+    @PreAuthorize("hasAuthority('SELLER') or hasAuthority('BUYER')")
+    public ResponseEntity<List<OrderDTO.OrderResponse2>> getAllOrdersByUser(@CurrentUser Long userId) {
         List<OrderDTO.OrderResponse2> orders = orderService.getAllOrders2(userId);
 
         return ResponseEntity.ok(orders);
     }
 
-    @GetMapping("/user/{userNum}")
-    public ResponseEntity<List<OrderDTO.OrderResponse>> getOrdersByUser(@PathVariable Long userNum) {
+    @GetMapping("/user2/")
+    @PreAuthorize("hasAuthority('SELLER') or hasAuthority('BUYER')")
+    public ResponseEntity<List<OrderDTO.OrderResponse>> getOrdersByUser(@CurrentUser Long userNum) {
         List<Order> orders = orderService.getOrdersByUser(userNum);
         List<OrderDTO.OrderResponse> response = orders.stream()
                 .map(OrderDTO.OrderResponse::fromEntity)

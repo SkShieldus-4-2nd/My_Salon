@@ -1,7 +1,9 @@
 package com.miniproject2.mysalon.controller.dto;
 
 import com.miniproject2.mysalon.entity.ShoppingCart;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
 import lombok.*;
 
 public class ShoppingCartDTO {
@@ -10,14 +12,12 @@ public class ShoppingCartDTO {
     @NoArgsConstructor
     @AllArgsConstructor
     @Builder
-    public static class Request {
+    public static class CartRequest {
 
-        @NotNull(message = "사용자 번호는 필수 입력 항목입니다.")
-        private Long userNum;
 
         @NotNull(message = "상품 상세 번호는 필수 입력 항목입니다.")
         private Long productDetailNum;
-
+        @Positive(message = "상품 수량은 양수여야 합니다.")
         private int count;
 
         private boolean isSelected;

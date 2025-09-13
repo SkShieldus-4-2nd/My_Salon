@@ -6,10 +6,13 @@ import com.miniproject2.mysalon.entity.UserType;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import lombok.*;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.time.LocalDateTime;
-
+@RequiredArgsConstructor
 public class UserDTO {
+
+    private final PasswordEncoder passwordEncoder;
 
     @Data
     @NoArgsConstructor
@@ -53,6 +56,7 @@ public class UserDTO {
         private String storeName;
 
         public static Response fromEntity(User user) {
+
             return Response.builder()
                     .userNum(user.getUserNum())
                     .id(user.getId())
@@ -65,5 +69,21 @@ public class UserDTO {
                     .storeName(user.getStoreName())
                     .build();
         }
+
+
+    }
+
+    @Data
+    @NoArgsConstructor
+    @AllArgsConstructor
+    @Builder
+    public static class LoginRequest {
+
+        @NotBlank(message = "아이디는 필수 입력 항목입니다.")
+        private String id;
+
+        @NotBlank(message = "비밀번호는 필수 입력 항목입니다.")
+        private String password;
+
     }
 }

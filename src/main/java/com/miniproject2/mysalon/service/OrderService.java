@@ -30,8 +30,8 @@ public class OrderService {
     private final OrderDetailRepository orderDetailRepository;
 
     // Create
-    public Long createOrder(OrderDTO.CreateOrderRequest request) {
-        User user = userRepository.findById(request.getUserNum())
+    public Long createOrder(OrderDTO.CreateOrderRequest request, Long userNum) {
+        User user = userRepository.findById(userNum)
                 .orElseThrow(() -> new BusinessException(ErrorCode.USER_NOT_FOUND));
 
         Order order = Order.builder()
@@ -56,8 +56,8 @@ public class OrderService {
         return orderRepository.save(order).getOrderNum();
     }
 
-    public OrderDTO.OrderCompleteResponse createOrder2(OrderDTO.CreateOrderRequest request) {
-        User user = userRepository.findById(request.getUserNum())
+    public OrderDTO.OrderCompleteResponse createOrder2(OrderDTO.CreateOrderRequest request, Long userNum) {
+        User user = userRepository.findById(userNum)
                 .orElseThrow(() -> new BusinessException(ErrorCode.USER_NOT_FOUND));
 
         Order order = Order.builder()
@@ -104,7 +104,7 @@ public class OrderService {
     // Update
     public Order updateOrder(Long orderId, OrderDTO.UpdateOrderRequest request) {
         Order order = orderRepository.findById(orderId)
-                .orElseThrow(() -> new EntityNotFoundException("Order not found"));
+                .orElseThrow(() -> new BusinessException(ErrorCode.USER_NOT_FOUND));
         return orderRepository.save(order);
     }
 
@@ -136,5 +136,13 @@ public class OrderService {
     }
 
 
-
+    public Long getOrdersCount(Long userNum) {
+        User user = userRepository.findById(userNum)
+                .orElseThrow(() -> new BusinessException(ErrorCode.USER_NOT_FOUND));
+        List<Order> orders =  orderRepository.findByUserUserNum(userNum);
+        Long totalProductCount = orders.stream()
+                .mapToLong(order -> order.getOrderProducts().size())
+                .sum();
+        return totalProductCount;
+    }
 }

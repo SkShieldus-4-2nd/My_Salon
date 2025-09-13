@@ -2,6 +2,7 @@ package com.miniproject2.mysalon.controller;
 
 import com.miniproject2.mysalon.controller.dto.PostDTO;
 import com.miniproject2.mysalon.controller.dto.PostLikeDTO;
+import com.miniproject2.mysalon.security.CurrentUser;
 import com.miniproject2.mysalon.service.PostLikeService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -15,8 +16,8 @@ public class PostLikeController {
 
     private final PostLikeService postLikeService;
 
-    @PutMapping("/{id}")
-    public ResponseEntity<PostDTO.SimpleCoordiPost> clickLike(@PathVariable Long id, @RequestBody PostLikeDTO.ClickRequest request) {
+    @PutMapping
+    public ResponseEntity<PostDTO.SimpleCoordiPost> clickLike(@CurrentUser Long id, @RequestBody PostLikeDTO.ClickRequest request) {
         PostDTO.SimpleCoordiPost response = postLikeService.clickPost(request, id);
         return ResponseEntity.ok(response);
     }

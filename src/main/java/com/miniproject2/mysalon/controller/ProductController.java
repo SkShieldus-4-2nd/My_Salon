@@ -10,6 +10,7 @@ import com.miniproject2.mysalon.service.ProductService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -27,6 +28,7 @@ public class ProductController {
     }
 
     @PostMapping("/create")
+    @PreAuthorize("hasAuthority('SELLER')")
     public ResponseEntity<ProductDTO> createProduct(@RequestBody CreateProductDTO.ProductRequest request) {
         return ResponseEntity.ok(productService.createProduct2(request));
     }

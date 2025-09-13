@@ -7,7 +7,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Table(name = "order-details")
+@Table(name = "order_details")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -19,7 +19,7 @@ public class OrderDetail{
     private Long orderDetailNum;
 
     @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "product_detail_num")
+    @JoinColumn(name = "product_detail_num", unique = false)
     private ProductDetail productDetail;
 
     @Column(nullable = false)

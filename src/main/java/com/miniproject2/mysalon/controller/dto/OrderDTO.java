@@ -26,7 +26,6 @@ public class OrderDTO {
     @NoArgsConstructor
     @AllArgsConstructor
     public static class CreateOrderRequest {
-        private Long userNum;
         private List<OrderItemDTO> orderItems;
     }
 
