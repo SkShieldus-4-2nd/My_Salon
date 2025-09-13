@@ -8,9 +8,15 @@ import com.miniproject2.mysalon.repository.ProductDetailRepository;
 import com.miniproject2.mysalon.repository.ReviewRepository;
 import com.miniproject2.mysalon.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -23,9 +29,12 @@ public class ReviewService {
     private final UserRepository userRepository;
     private final ProductDetailRepository productDetailRepository;
 
+    @Value("${file.upload-dir}")
+    private String uploadDir;
+
     //리뷰 생성
     @Transactional
-    public ReviewDTO.Response createReview(Long userNum, Long productDetailNum, Short score, String text, org.springframework.web.multipart.MultipartFile reviewImage) {
+    public ReviewDTO.Response createReview(Long userNum, Long productDetailNum, Short score, String text, MultipartFile reviewImage) {
         User user = userRepository.findById(userNum)
                 .orElseThrow(() -> new IllegalArgumentException("User not found"));
         ProductDetail productDetail = productDetailRepository.findById(productDetailNum)
@@ -42,10 +51,9 @@ public class ReviewService {
 
         if (reviewImage != null && !reviewImage.isEmpty()) {
             try {
-                String uploadDir = "src/main/resources/static/images/review/" + savedReview.getReviewNum() + "/";
-                java.nio.file.Path uploadPath = java.nio.file.Paths.get(uploadDir);
-                if (!java.nio.file.Files.exists(uploadPath)) {
-                    java.nio.file.Files.createDirectories(uploadPath);
+                Path uploadPath = Paths.get(uploadDir, "review", String.valueOf(savedReview.getReviewNum()));
+                if (!Files.exists(uploadPath)) {
+                    Files.createDirectories(uploadPath);
                 }
 
                 String originalFilename = reviewImage.getOriginalFilename();
@@ -54,22 +62,20 @@ public class ReviewService {
                     extension = originalFilename.substring(originalFilename.lastIndexOf("."));
                 }
 
-                // Sanitize the text to create a safe filename, truncate, and make it unique.
                 String safeFilename = text.replaceAll("[^a-zA-Z0-9가-힣]", "_");
                 if (safeFilename.length() > 30) {
                     safeFilename = safeFilename.substring(0, 30);
                 }
                 safeFilename = safeFilename + "_" + savedReview.getReviewNum() + extension;
 
-                java.nio.file.Path filePath = uploadPath.resolve(safeFilename);
+                Path filePath = uploadPath.resolve(safeFilename);
                 reviewImage.transferTo(filePath.toFile());
 
-                // Set the relative path to be stored in the database
-                savedReview.setReviewImage("/images/review/" + savedReview.getReviewNum() + "/" + safeFilename);
+                String fileUrl = "/uploads/review/" + savedReview.getReviewNum() + "/" + safeFilename;
+                savedReview.setReviewImage(fileUrl);
                 reviewRepository.save(savedReview);
 
-            } catch (java.io.IOException e) {
-                // Consider adding more robust error handling
+            } catch (IOException e) {
                 throw new RuntimeException("Could not store the file. Error: " + e.getMessage());
             }
         }
