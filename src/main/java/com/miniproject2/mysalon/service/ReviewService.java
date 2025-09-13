@@ -25,21 +25,55 @@ public class ReviewService {
 
     //리뷰 생성
     @Transactional
-    public ReviewDTO.Response createReview(ReviewDTO.Request request) {
-        User user = userRepository.findById(request.getUserNum())
+    public ReviewDTO.Response createReview(Long userNum, Long productDetailNum, Short score, String text, org.springframework.web.multipart.MultipartFile reviewImage) {
+        User user = userRepository.findById(userNum)
                 .orElseThrow(() -> new IllegalArgumentException("User not found"));
-        ProductDetail productDetail = productDetailRepository.findById(request.getProductDetailNum())
+        ProductDetail productDetail = productDetailRepository.findById(productDetailNum)
                 .orElseThrow(() -> new IllegalArgumentException("Product detail not found"));
 
         Review review = Review.builder()
                 .user(user)
                 .productDetail(productDetail)
-                .text(request.getText())
-                .score(request.getScore())
-                .reviewImage(request.getReviewImage())
+                .text(text)
+                .score(score)
                 .build();
 
         Review savedReview = reviewRepository.save(review);
+
+        if (reviewImage != null && !reviewImage.isEmpty()) {
+            try {
+                String uploadDir = "src/main/resources/static/images/review/" + savedReview.getReviewNum() + "/";
+                java.nio.file.Path uploadPath = java.nio.file.Paths.get(uploadDir);
+                if (!java.nio.file.Files.exists(uploadPath)) {
+                    java.nio.file.Files.createDirectories(uploadPath);
+                }
+
+                String originalFilename = reviewImage.getOriginalFilename();
+                String extension = "";
+                if (originalFilename != null && originalFilename.contains(".")) {
+                    extension = originalFilename.substring(originalFilename.lastIndexOf("."));
+                }
+
+                // Sanitize the text to create a safe filename, truncate, and make it unique.
+                String safeFilename = text.replaceAll("[^a-zA-Z0-9가-힣]", "_");
+                if (safeFilename.length() > 30) {
+                    safeFilename = safeFilename.substring(0, 30);
+                }
+                safeFilename = safeFilename + "_" + savedReview.getReviewNum() + extension;
+
+                java.nio.file.Path filePath = uploadPath.resolve(safeFilename);
+                reviewImage.transferTo(filePath.toFile());
+
+                // Set the relative path to be stored in the database
+                savedReview.setReviewImage("/images/review/" + savedReview.getReviewNum() + "/" + safeFilename);
+                reviewRepository.save(savedReview);
+
+            } catch (java.io.IOException e) {
+                // Consider adding more robust error handling
+                throw new RuntimeException("Could not store the file. Error: " + e.getMessage());
+            }
+        }
+
         return ReviewDTO.Response.fromEntity(savedReview);
     }
 

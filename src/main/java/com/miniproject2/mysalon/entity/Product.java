@@ -1,13 +1,7 @@
 package com.miniproject2.mysalon.entity;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-
-import java.util.ArrayList;
-import java.util.List;
+import lombok.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -59,6 +53,7 @@ public class Product {
     @Column(nullable = true)
     private Long likeCount;
 
+    @ToString.Exclude
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
     @Builder.Default
     private List<ProductDetail> productDetails = new ArrayList<>();
