@@ -1,5 +1,6 @@
 package com.miniproject2.mysalon.controller.dto;
 
+import com.miniproject2.mysalon.entity.CategoryLow;
 import com.miniproject2.mysalon.entity.Post;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -82,14 +83,17 @@ public class PostDTO {
     @AllArgsConstructor
     @Builder
     public static class SimpleCoordiPost {
+        private Long postNum;
         private String coordiImage;
         private String title;
         private String writer;
         private String userImage;
         private Long likeCount;
+        private CategoryLow categoryLow;
 
         public static SimpleCoordiPost fromEntity(Post post) {
             return SimpleCoordiPost.builder()
+                    .postNum(post.getPostNum())
                     .coordiImage(post.getImage())
                     .title(post.getTitle())
                     .writer(post.getUser().getUserName())
