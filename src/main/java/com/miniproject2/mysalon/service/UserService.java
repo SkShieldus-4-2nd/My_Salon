@@ -6,9 +6,9 @@ import com.miniproject2.mysalon.exception.BusinessException;
 import com.miniproject2.mysalon.exception.ErrorCode;
 import com.miniproject2.mysalon.repository.UserRepository;
 
+import com.miniproject2.mysalon.utils.JwtUtil;
 import lombok.RequiredArgsConstructor;
-//import org.springframework.security.crypto.password.PasswordEncoder;
-//import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -20,13 +20,29 @@ import java.util.List;
 public class UserService {
 
     private final UserRepository userRepository;
-    //private final PasswordEncoder passwordEncoder; // 추가
+    private final PasswordEncoder passwordEncoder;
+    private final JwtUtil jwtUtil;
+
+    // 로그인
+    @Transactional(readOnly = true)
+    public UserDTO.LoginResponse login(UserDTO.LoginRequest request) {
+        User user = userRepository.findById(request.getId())
+                .orElseThrow(() -> new BusinessException(ErrorCode.USER_NOT_FOUND));
+
+        if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
+            throw new BusinessException(ErrorCode.AUTH_INVALID_CREDENTIALS);
+        }
+
+        String token = jwtUtil.generateToken(user.getId(), user.getUserNum());
+
+        return UserDTO.LoginResponse.builder()
+                .token(token)
+                .user(UserDTO.Response.fromEntity(user))
+                .build();
+    }
 
     // 유저 생성
     public UserDTO.Response createUser(UserDTO.Request request) {
-        // 비밀번호 암호화
-        //String encodedPassword = passwordEncoder.encode(request.getPassword());
-        //String encodedSecondPassword = passwordEncoder.encode(request.getSecondPassword());
         if (userRepository.existsById(request.getId())) {
             throw new BusinessException(ErrorCode.USER_ID_DUPLICATE);
         }
@@ -34,11 +50,15 @@ public class UserService {
             throw new BusinessException(ErrorCode.USER_NAME_DUPLICATE);
         }
 
+        // 비밀번호 암호화
+        String encodedPassword = passwordEncoder.encode(request.getPassword());
+        String encodedSecondPassword = passwordEncoder.encode(request.getSecondPassword());
+
         User user = User.builder()
                 .id(request.getId())
-                .password(request.getPassword())
+                .password(encodedPassword)
                 .userName(request.getUserName())
-                .secondPassword(request.getSecondPassword())
+                .secondPassword(encodedSecondPassword)
                 .gender(request.getGender())
                 .tall(request.getTall())
                 .weight(request.getWeight())
@@ -60,14 +80,14 @@ public class UserService {
         user.setType(request.getType());
         user.setStoreName(request.getStoreName());
 
-       /* // 비밀번호가 null이 아니면 암호화 후 업데이트
+        // 비밀번호가 null이 아니면 암호화 후 업데이트
         if (request.getPassword() != null && !request.getPassword().isEmpty()) {
             user.setPassword(passwordEncoder.encode(request.getPassword()));
         }
 
         if (request.getSecondPassword() != null && !request.getSecondPassword().isEmpty()) {
             user.setSecondPassword(passwordEncoder.encode(request.getSecondPassword()));
-        }*/
+        }
 
         return UserDTO.Response.fromEntity(userRepository.save(user));
     }
