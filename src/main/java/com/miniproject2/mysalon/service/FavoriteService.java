@@ -14,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -64,10 +65,16 @@ public class FavoriteService {
 
     // 유저별 찜 목록 조회
     @Transactional(readOnly = true)
-    public List<Favorite> getUserFavorites(Long userNum) {
+    public List<FavoriteDTO.Response> getUserFavorites(Long userNum) {
         User user = userRepository.findById(userNum)
                 .orElseThrow(() -> new RuntimeException("User not found"));
-        return favoriteRepository.findByUser(user);
+
+        List<Favorite> favorites = favoriteRepository.findByUser(user);
+
+        // Favorite -> FavoriteDTO.Response 변환
+        return favorites.stream()
+                .map(FavoriteDTO.Response::fromEntity)
+                .collect(Collectors.toList());
     }
 
     // 유저가 찜한 상품 개수
