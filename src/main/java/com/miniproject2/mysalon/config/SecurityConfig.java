@@ -30,8 +30,7 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf.disable()) // CSRF 보호 비활성화 (JWT 사용 시)
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)) // 세션 사용 안함
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/users/login", "/api/users").permitAll() // 로그인, 회원가입은 허용
-                        .anyRequest().authenticated() // 나머지는 인증 필요
+                        .anyRequest().permitAll() // 모든 요청을 허용 (개발용)
                 )
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 

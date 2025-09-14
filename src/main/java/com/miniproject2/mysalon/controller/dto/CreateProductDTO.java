@@ -2,6 +2,7 @@ package com.miniproject2.mysalon.controller.dto;
 
 import com.miniproject2.mysalon.entity.*;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import lombok.*;
 
@@ -21,9 +22,9 @@ public class CreateProductDTO {
         private Long userNum;
         @NotBlank(message = "상품 이름은 필수입니다.")
         private String productName;
-        @NotBlank(message = "가격은 필수입니다.")
+        @NotNull(message = "가격은 필수입니다.")
         private Long price;
-        @NotBlank(message = "배송비는 필수입니다.")
+        @NotNull(message = "배송비는 필수입니다.")
         private Long deliveryFee;
         private String mainImage;
         private String description;
@@ -53,6 +54,8 @@ public class CreateProductDTO {
 
         // DTO -> Entity
         public Product toEntity(User user) {
+
+            System.out.println("DEBUG: deliveryFee in toEntity = " + this.deliveryFee);
 
             if (this.category == null) {
                 this.category = Category.ALL;
@@ -107,7 +110,7 @@ public class CreateProductDTO {
             );
         }
 
-        public ProductDetail toEntity(ProductDetailDTO2 dto, Product product) {
+        public static ProductDetail toEntity(ProductDetailDTO2 dto, Product product) {
             return ProductDetail.builder()
                     .color(dto.getColor())
                     .size(dto.getSize())
@@ -120,3 +123,4 @@ public class CreateProductDTO {
 
 
 }
+
