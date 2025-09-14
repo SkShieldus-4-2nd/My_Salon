@@ -33,10 +33,7 @@ public class FavoriteController {
     // 유저별 찜 목록 조회
     @GetMapping("/{userNum}")
     public ResponseEntity<List<FavoriteDTO.Response>> getUserFavorites(@PathVariable Long userNum) {
-        List<FavoriteDTO.Response> favorites = favoriteService.getUserFavorites(userNum)
-                .stream()
-                .map(FavoriteDTO.Response::fromEntity)
-                .collect(Collectors.toList());
+        List<FavoriteDTO.Response> favorites = favoriteService.getUserFavorites(userNum);
         return ResponseEntity.ok(favorites);
     }
 

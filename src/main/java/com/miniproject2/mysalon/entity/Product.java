@@ -57,7 +57,8 @@ public class Product {
     private Long deliveryPrice;
 
     @Column(nullable = true)
-    private Long likeCount;
+    @Builder.Default
+    private Long likeCount = 0L;
 
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
     @Builder.Default

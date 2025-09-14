@@ -65,8 +65,10 @@ public class User {
     //몸무게
     @Column
     private Short weight;
+
     @Enumerated(EnumType.STRING)
     private Gender gender;
+
     @CreationTimestamp
     @Column(updatable = false)
     private LocalDateTime createdAt = LocalDateTime.now();

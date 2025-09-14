@@ -1,5 +1,6 @@
 package com.miniproject2.mysalon.controller.dto;
 
+import com.miniproject2.mysalon.entity.Category;
 import com.miniproject2.mysalon.entity.Favorite;
 import com.miniproject2.mysalon.entity.Product;
 import jakarta.validation.constraints.NotNull;
@@ -27,11 +28,18 @@ public class FavoriteDTO {
     public static class Response {
         private Long userNum;
         private Long productNum;
-
+        private String productName;
+        private String productImage;
+        private Long productPrice;
+        private Category category;
         public static Response fromEntity(Favorite favorite) {
             return Response.builder()
                     .userNum(favorite.getUser().getUserNum())
                     .productNum(favorite.getProduct().getProductNum())
+                    .productName(favorite.getProduct().getProductName())
+                    .productImage(favorite.getProduct().getMainImage())
+                    .productPrice(favorite.getProduct().getPrice())
+                    .category(favorite.getProduct().getCategory())
                     .build();
         }
     }

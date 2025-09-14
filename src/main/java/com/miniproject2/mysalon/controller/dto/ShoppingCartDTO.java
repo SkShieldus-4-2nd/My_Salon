@@ -30,6 +30,11 @@ public class ShoppingCartDTO {
     public static class Response {
         private Long userNum;
         private Long productDetailNum;
+        private String productName;
+        private String productImage;
+        private Long productPrice;
+        private String size;
+        private String color;
         private int count;
         private boolean isSelected;
 
@@ -37,9 +42,15 @@ public class ShoppingCartDTO {
             return Response.builder()
                     .userNum(cart.getUser().getUserNum())
                     .productDetailNum(cart.getProductDetail().getProductDetailNum())
+                    .productName(cart.getProductDetail().getProduct().getProductName())
+                    .productImage(cart.getProductDetail().getProduct().getMainImage())
+                    .productPrice(cart.getProductDetail().getProduct().getPrice())
+                    .size(cart.getProductDetail().getSize())
+                    .color(cart.getProductDetail().getColor())
                     .count(cart.getCount())
                     .isSelected(cart.isSelected())
                     .build();
         }
     }
+
 }

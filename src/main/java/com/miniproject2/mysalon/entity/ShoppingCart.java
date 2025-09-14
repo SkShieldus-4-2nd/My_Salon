@@ -28,6 +28,4 @@ public class ShoppingCart {
 
     @Column(nullable = false,columnDefinition = "BOOLEAN DEFAULT TRUE")
     private boolean isSelected = true;
-
-
 }
