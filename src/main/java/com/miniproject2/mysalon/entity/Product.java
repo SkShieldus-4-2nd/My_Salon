@@ -30,21 +30,22 @@ public class Product {
     @Column(nullable = false)
     private Long price;
 
-    @Column(nullable = false)
-    private String mainImage;
+    @Column(nullable = true)
+    @Builder.Default
+    private String mainImage = "default.jpg";
 
     @Column(nullable = false)
     private String description;
 
-    @Column(nullable = false)
+    @Column(nullable = true)
     @Enumerated(EnumType.STRING)
     private Gender gender;
 
-    @Column(nullable = false)
+    @Column(nullable = true)
     @Enumerated(EnumType.STRING)
     private Category category;
 
-    @Column(nullable = false)
+    @Column(nullable = true)
     @Enumerated(EnumType.STRING)
     private CategoryLow categoryLow;
 

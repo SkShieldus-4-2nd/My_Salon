@@ -1,6 +1,7 @@
 package com.miniproject2.mysalon.controller.dto;
 
 import com.miniproject2.mysalon.entity.*;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
@@ -25,8 +26,9 @@ public class CreateProductDTO {
         @NotNull(message = "가격은 필수입니다.")
         private Long price;
         @NotNull(message = "배송비는 필수입니다.")
-        private Long deliveryFee;
-        private String mainImage;
+        @JsonProperty("delivery_price")
+        private Long delivery_price;
+        private String mainImage = "default.jpg";
         private String description;
         private Gender gender;
         private Category category;
@@ -55,7 +57,7 @@ public class CreateProductDTO {
         // DTO -> Entity
         public Product toEntity(User user) {
 
-            System.out.println("DEBUG: deliveryFee in toEntity = " + this.deliveryFee);
+            System.out.println("DEBUG: delivery_price in toEntity = " + this.delivery_price);
 
             if (this.category == null) {
                 this.category = Category.ALL;
@@ -67,7 +69,7 @@ public class CreateProductDTO {
                 this.gender = Gender.ALL;
             }
             Product product = Product.builder()
-                    .deliveryPrice(this.deliveryFee)
+                    .deliveryPrice(this.delivery_price)
                     .user(user)
                     .productName(this.productName)
                     .price(this.price)

@@ -47,6 +47,14 @@ public class ProductService {
         return ProductDTO.fromEntity(savedProduct);
     }
 
+    @Transactional
+    public void updateProductImage(Long productId, String imageUrl) {
+        Product product = productRepository.findById(productId)
+                .orElseThrow(() -> new BusinessException(ErrorCode.PRODUCT_NOT_FOUND));
+        product.setMainImage(imageUrl);
+        productRepository.save(product);
+    }
+
     public ProductDTO editProduct(Long productId, ProductDTO productDTO, boolean isPatch) {
         Product existingProduct = productRepository.findById(productId)
                 .orElseThrow(() -> new EntityNotFoundException("Product", productId));
