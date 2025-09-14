@@ -4,6 +4,8 @@ import com.miniproject2.mysalon.controller.dto.ReviewDTO;
 import com.miniproject2.mysalon.entity.ProductDetail;
 import com.miniproject2.mysalon.entity.Review;
 import com.miniproject2.mysalon.entity.User;
+import com.miniproject2.mysalon.exception.BusinessException;
+import com.miniproject2.mysalon.exception.ErrorCode;
 import com.miniproject2.mysalon.repository.ProductDetailRepository;
 import com.miniproject2.mysalon.repository.ReviewRepository;
 import com.miniproject2.mysalon.repository.UserRepository;
@@ -30,23 +32,57 @@ public class ReviewService {
     private final ProductDetailRepository productDetailRepository;
 
 
+    @Value("${file.upload-dir}")
+    private String uploadDir;
+
     //리뷰 생성
     @Transactional
-    public ReviewDTO.Response createReview(ReviewDTO.Request request) {
-        User user = userRepository.findById(request.getUserNum())
+    public ReviewDTO.Response createReview(Long userNum, Long productDetailNum, Short score, String text, MultipartFile reviewImage) {
+        User user = userRepository.findById(userNum)
                 .orElseThrow(() -> new IllegalArgumentException("User not found"));
-        ProductDetail productDetail = productDetailRepository.findById(request.getProductDetailNum())
+        ProductDetail productDetail = productDetailRepository.findById(productDetailNum)
                 .orElseThrow(() -> new IllegalArgumentException("Product detail not found"));
 
         Review review = Review.builder()
                 .user(user)
                 .productDetail(productDetail)
-                .text(request.getText())
-                .score(request.getScore())
-                .reviewImage(request.getReviewImage())
+                .text(text)
+                .score(score)
                 .build();
 
         Review savedReview = reviewRepository.save(review);
+
+        if (reviewImage != null && !reviewImage.isEmpty()) {
+            try {
+                Path uploadPath = Paths.get(uploadDir, "review", String.valueOf(savedReview.getReviewNum()));
+                if (!Files.exists(uploadPath)) {
+                    Files.createDirectories(uploadPath);
+                }
+
+                String originalFilename = reviewImage.getOriginalFilename();
+                String extension = "";
+                if (originalFilename != null && originalFilename.contains(".")) {
+                    extension = originalFilename.substring(originalFilename.lastIndexOf("."));
+                }
+
+                String safeFilename = text.replaceAll("[^a-zA-Z0-9가-힣]", "_");
+                if (safeFilename.length() > 30) {
+                    safeFilename = safeFilename.substring(0, 30);
+                }
+                safeFilename = safeFilename + "_" + savedReview.getReviewNum() + extension;
+
+                Path filePath = uploadPath.resolve(safeFilename);
+                reviewImage.transferTo(filePath.toFile());
+
+                String fileUrl = "/uploads/review/" + savedReview.getReviewNum() + "/" + safeFilename;
+                savedReview.setReviewImage(fileUrl);
+                reviewRepository.save(savedReview);
+
+            } catch (IOException e) {
+                throw new RuntimeException("Could not store the file. Error: " + e.getMessage());
+            }
+        }
+
         return ReviewDTO.Response.fromEntity(savedReview);
     }
 
@@ -54,7 +90,7 @@ public class ReviewService {
     @Transactional
     public ReviewDTO.Response editReview(Long reviewNum, ReviewDTO.Request request) {
         Review review = reviewRepository.findById(reviewNum)
-                .orElseThrow(() -> new IllegalArgumentException("Review not found"));
+                .orElseThrow(() -> new BusinessException(ErrorCode.USER_NOT_FOUND));
 
         review.setText(request.getText());
         review.setScore(request.getScore());
@@ -77,7 +113,7 @@ public class ReviewService {
     @Transactional(readOnly = true)
     public List<ReviewDTO.Response> getUserReviews(Long userNum) {
         User user = userRepository.findById(userNum)
-                .orElseThrow(() -> new IllegalArgumentException("User not found"));
+                .orElseThrow(() -> new BusinessException(ErrorCode.USER_NOT_FOUND));
 
         return reviewRepository.findByUserOrderByCreatedAtDesc(user)
                 .stream()
@@ -100,7 +136,7 @@ public class ReviewService {
     @Transactional(readOnly = true)
     public List<ReviewDTO.Response> getUserReviewsByProduct(Long userNum, Long productNum) {
         User user = userRepository.findById(userNum)
-                .orElseThrow(() -> new IllegalArgumentException("User not found"));
+                .orElseThrow(() -> new BusinessException(ErrorCode.USER_NOT_FOUND));
 
         return reviewRepository.findByUserAndProductNumOrderByCreatedAtDesc(user, productNum).stream()
                 .map(ReviewDTO.Response::fromEntity)
@@ -149,7 +185,7 @@ public class ReviewService {
     @Transactional(readOnly = true)
     public Long getUserReviewCount(Long userNum) {
         User user = userRepository.findById(userNum)
-                .orElseThrow(() -> new IllegalArgumentException("User not found"));
+                .orElseThrow(() -> new BusinessException(ErrorCode.USER_NOT_FOUND));
         return reviewRepository.countByUser(user);
     }
 

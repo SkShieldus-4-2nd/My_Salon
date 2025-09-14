@@ -17,8 +17,7 @@ public class CreateProductDTO {
     @AllArgsConstructor
     @Builder
     public static class ProductRequest {
-        @Positive
-        private Long userNum;
+
         @NotBlank(message = "상품 이름은 필수입니다.")
         private String productName;
         @NotBlank(message = "가격은 필수입니다.")

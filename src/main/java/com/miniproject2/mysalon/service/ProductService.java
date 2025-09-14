@@ -39,8 +39,8 @@ public class ProductService {
         return ProductDTO.fromEntity(savedProduct);
     }
 
-    public ProductDTO createProduct2(CreateProductDTO.ProductRequest request) {
-        User user = userRepository.findById(request.getUserNum())
+    public ProductDTO createProduct2(Long userNum, CreateProductDTO.ProductRequest request) {
+        User user = userRepository.findById(userNum)
                 .orElseThrow(() -> new BusinessException(ErrorCode.USER_NOT_FOUND));
         Product product = request.toEntity(user);
         Product savedProduct = productRepository.save(product);
@@ -87,14 +87,14 @@ public class ProductService {
         return ProductDTO.fromEntity(updatedProduct);
     }
 
-    public ProductDTO editProduct2(Long productId, CreateProductDTO.ProductRequest request) {
+    public ProductDTO editProduct2(Long userNum, Long productId, CreateProductDTO.ProductRequest request) {
         Product existingProduct = productRepository.findById(productId)
                 .orElseThrow(() -> new BusinessException(ErrorCode.PRODUCT_NOT_FOUND));
 
-        User user = userRepository.findById(request.getUserNum())
+        User user = userRepository.findById(userNum)
                     .orElseThrow(() -> new BusinessException(ErrorCode.USER_NOT_FOUND));
         deleteProduct(productId);
-        return createProduct2(request);
+        return createProduct2(userNum, request);
 
     }
 

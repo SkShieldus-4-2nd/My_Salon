@@ -6,6 +6,7 @@ import com.miniproject2.mysalon.controller.dto.ProductSimpleDTO;
 import com.miniproject2.mysalon.entity.Category;
 import com.miniproject2.mysalon.entity.CategoryLow;
 import com.miniproject2.mysalon.entity.Gender;
+import com.miniproject2.mysalon.security.CurrentUser;
 import com.miniproject2.mysalon.service.ProductService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -30,8 +31,8 @@ public class ProductController {
 
     @PostMapping("/create")
     @PreAuthorize("hasAuthority('SELLER')")
-    public ResponseEntity<ProductDTO> createProduct(@RequestBody CreateProductDTO.ProductRequest request) {
-        return ResponseEntity.ok(productService.createProduct2(request));
+    public ResponseEntity<ProductDTO> createProduct(@CurrentUser Long userNum, @RequestBody CreateProductDTO.ProductRequest request) {
+        return ResponseEntity.ok(productService.createProduct2(userNum,request));
     }
 
     @PutMapping("/{productId}")
@@ -44,8 +45,8 @@ public class ProductController {
         return ResponseEntity.ok(productService.editProduct(productId, productDTO, true));
     }
     @PatchMapping("/update/{productId}")
-    public ResponseEntity<ProductDTO> updateProduct2(@PathVariable Long productId, @RequestBody CreateProductDTO.ProductRequest request) {
-        return ResponseEntity.ok(productService.editProduct2(productId,request));
+    public ResponseEntity<ProductDTO> updateProduct2(@CurrentUser Long userNum,@PathVariable Long productId, @RequestBody CreateProductDTO.ProductRequest request) {
+        return ResponseEntity.ok(productService.editProduct2(userNum, productId,request));
     }
 
 

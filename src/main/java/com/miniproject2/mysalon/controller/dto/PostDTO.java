@@ -80,6 +80,7 @@ public class PostDTO {
     @AllArgsConstructor
     @Builder
     public static class SimpleCoordiPost {
+        private Long postNum;
         private String coordiImage;
         private String title;
         private String writer;

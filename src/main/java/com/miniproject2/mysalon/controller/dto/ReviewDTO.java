@@ -20,9 +20,6 @@ public class ReviewDTO {
     @Builder
     public static class Request {
 
-        @NotNull(message = "회원 정보는 필수입니다.")
-        private Long userNum;
-
         @NotNull(message = "상품 상세 정보는 필수입니다.")
         private Long productDetailNum;
 

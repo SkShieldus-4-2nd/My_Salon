@@ -19,9 +19,15 @@ public class ReviewController {
     private final ReviewService reviewService;
 
     //리뷰 생성
-    @PostMapping
-    public ResponseEntity<ReviewDTO.Response> createReview(@RequestBody @Valid ReviewDTO.Request request) {
-        ReviewDTO.Response response = reviewService.createReview(request);
+    @PostMapping(value = "/{productDetailNum}", consumes = org.springframework.http.MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<ReviewDTO.Response> createReview(
+            @PathVariable Long productDetailNum,
+            @CurrentUser Long userNum, // TODO: Replace with @AuthenticationPrincipal or SecurityContextHolder
+            @RequestParam("score") Short score,
+            @RequestParam("text") String text,
+            @RequestParam(value = "reviewImage", required = false) org.springframework.web.multipart.MultipartFile reviewImage
+    ) {
+        ReviewDTO.Response response = reviewService.createReview(userNum, productDetailNum, score, text, reviewImage);
         return ResponseEntity.ok(response);
     }
 
