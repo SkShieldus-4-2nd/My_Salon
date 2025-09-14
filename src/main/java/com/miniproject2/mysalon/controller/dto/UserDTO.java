@@ -66,4 +66,24 @@ public class UserDTO {
                     .build();
         }
     }
+
+    @Data
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class LoginRequest {
+        @NotBlank(message = "아이디는 필수 입력 항목입니다.")
+        private String id;
+
+        @NotBlank(message = "비밀번호는 필수 입력 항목입니다.")
+        private String password;
+    }
+
+    @Data
+    @NoArgsConstructor
+    @AllArgsConstructor
+    @Builder
+    public static class LoginResponse {
+        private String token;
+        private Response user;
+    }
 }

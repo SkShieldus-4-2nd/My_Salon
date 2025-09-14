@@ -16,6 +16,12 @@ public class UserController {
 
     private final UserService userService;
 
+    // ✅ 로그인
+    @PostMapping("/login")
+    public ResponseEntity<UserDTO.LoginResponse> login(@Valid @RequestBody UserDTO.LoginRequest request) {
+        return ResponseEntity.ok(userService.login(request));
+    }
+
     // ✅ 유저 생성
     @PostMapping
     public ResponseEntity<UserDTO.Response> createUser(@Valid @RequestBody UserDTO.Request request) {
