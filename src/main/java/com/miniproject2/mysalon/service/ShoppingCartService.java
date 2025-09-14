@@ -52,7 +52,7 @@ public class ShoppingCartService {
     @Transactional(readOnly = true)
     public List<ShoppingCartDTO.Response> getUserCartDTO(Long userNum) {
         User user = userRepository.findById(userNum)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+                .orElseThrow(() -> new BusinessException(ErrorCode.USER_NOT_FOUND));
         List<ShoppingCart> cartItems = shoppingCartRepository.findByUser(user);
 
         return cartItems.stream()

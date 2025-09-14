@@ -84,11 +84,16 @@
             <version>2.7.0</version>
         </dependency>
 
+<<<<<<< HEAD
+=======
+        <!-- Spring Security -->
+>>>>>>> origin/박시훈2
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-security</artifactId>
         </dependency>
 
+<<<<<<< HEAD
         <dependency>
             <groupId>io.jsonwebtoken</groupId>
             <artifactId>jjwt-api</artifactId>
@@ -103,6 +108,13 @@
             <groupId>io.jsonwebtoken</groupId>
             <artifactId>jjwt-jackson</artifactId>
             <version>0.12.7</version>
+=======
+        <!-- JWT -->
+        <dependency>
+            <groupId>com.auth0</groupId>
+            <artifactId>java-jwt</artifactId>
+            <version>4.4.0</version>
+>>>>>>> origin/박시훈2
         </dependency>
 
 	</dependencies>

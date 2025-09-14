@@ -23,6 +23,7 @@ public class ProductController {
     private final ProductService productService;
 
     @PostMapping
+    @PreAuthorize("hasAuthority('SELLER')")
     public ResponseEntity<ProductDTO> createProduct(@RequestBody ProductDTO productDTO) {
         return ResponseEntity.ok(productService.createProduct(productDTO));
     }
@@ -55,6 +56,7 @@ public class ProductController {
     }
 
     @GetMapping
+    @PreAuthorize("hasAuthority('SELLER') or hasAuthority('BUYER')")
     public ResponseEntity<List<ProductDTO>> searchProducts(
             @RequestParam(required = false) String name,
             @RequestParam(required = false) Category category,

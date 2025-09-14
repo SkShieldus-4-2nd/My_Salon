@@ -23,12 +23,8 @@ import java.util.List;
 public class UserController {
 
     private final UserService userService;
-    @Autowired
-    private PasswordEncoder passwordEncoder;
-    @Autowired
-    private AuthenticationManager authenticationManager;
-    @Autowired
-    private JwtService jwtService;
+    private final AuthenticationManager authenticationManager;
+    private final JwtService jwtService;
     // ✅ 유저 생성
     @PostMapping
     public ResponseEntity<UserDTO.Response> createUser(@Valid @RequestBody UserDTO.Request request) {
@@ -85,6 +81,4 @@ public class UserController {
             throw new UsernameNotFoundException("invalid user request !");
         }
     }
-
-
 }

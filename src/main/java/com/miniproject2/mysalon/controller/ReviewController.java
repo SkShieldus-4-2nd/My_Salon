@@ -2,6 +2,7 @@ package com.miniproject2.mysalon.controller;
 
 import com.miniproject2.mysalon.controller.dto.ProductDTO;
 import com.miniproject2.mysalon.controller.dto.ReviewDTO;
+import com.miniproject2.mysalon.security.CurrentUser;
 import com.miniproject2.mysalon.service.ReviewService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -17,7 +18,7 @@ public class ReviewController {
 
     private final ReviewService reviewService;
 
-    //리뷰 생성(엔티티에 추가하지말고 dto로만 반환하도록)
+    //리뷰 생성
     @PostMapping
     public ResponseEntity<ReviewDTO.Response> createReview(@RequestBody @Valid ReviewDTO.Request request) {
         ReviewDTO.Response response = reviewService.createReview(request);

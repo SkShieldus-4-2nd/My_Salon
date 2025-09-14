@@ -42,7 +42,6 @@ public class PostDTO {
 
         public static Response fromEntity(Post post) {
             return Response.builder()
-                    .postId(post.getPostNum())
                     .title(post.getTitle())
                     .text(post.getText())
                     .likeCount(post.getLikeCount())
@@ -81,7 +80,6 @@ public class PostDTO {
     @AllArgsConstructor
     @Builder
     public static class SimpleCoordiPost {
-        private Long postNum;
         private String coordiImage;
         private String title;
         private String writer;

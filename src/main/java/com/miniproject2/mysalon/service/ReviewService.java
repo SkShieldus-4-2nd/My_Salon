@@ -8,9 +8,15 @@ import com.miniproject2.mysalon.repository.ProductDetailRepository;
 import com.miniproject2.mysalon.repository.ReviewRepository;
 import com.miniproject2.mysalon.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -22,6 +28,7 @@ public class ReviewService {
     private final ReviewRepository reviewRepository;
     private final UserRepository userRepository;
     private final ProductDetailRepository productDetailRepository;
+
 
     //리뷰 생성
     @Transactional
