@@ -19,7 +19,7 @@ public class ProductDTO {
     private Long userNum;
     private String productName;
     private Long price;
-    private Long deliveryFee;
+    private Long deliveryPrice;
     private String mainImage;
     private String description;
     private Gender gender;
@@ -30,7 +30,7 @@ public class ProductDTO {
     // Entity -> DTO
     public static ProductDTO fromEntity(Product product) {
         return ProductDTO.builder()
-                .deliveryFee(product.getDeliveryPrice())
+                .deliveryPrice(product.getDeliveryPrice())
                 .productNum(product.getProductNum())
                 .userNum(product.getUser().getUserNum())
                 .productName(product.getProductName())
@@ -49,7 +49,7 @@ public class ProductDTO {
     // DTO -> Entity
     public Product toEntity(User user) {
         Product product = Product.builder()
-                .deliveryPrice(this.deliveryFee)
+                .deliveryPrice(this.deliveryPrice)
                 .productNum(this.productNum)
                 .user(user)
                 .productName(this.productName)

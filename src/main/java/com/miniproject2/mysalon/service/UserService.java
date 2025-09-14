@@ -55,6 +55,7 @@ public class UserService {
 
         user.setUserName(request.getUserName());
         user.setProfileImage(request.getProfileImage());
+        user.setGender(request.getGender());
         user.setTall(request.getTall());
         user.setWeight(request.getWeight());
         user.setType(request.getType());
