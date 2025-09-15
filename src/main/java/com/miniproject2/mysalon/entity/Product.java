@@ -60,6 +60,8 @@ public class Product {
     @Builder.Default
     private Long likeCount = 0L;
 
+
+
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
     @Builder.Default
     private List<ProductDetail> productDetails = new ArrayList<>();

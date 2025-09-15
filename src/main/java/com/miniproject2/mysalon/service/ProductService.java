@@ -2,7 +2,6 @@ package com.miniproject2.mysalon.service;
 
 import com.miniproject2.mysalon.controller.dto.CreateProductDTO;
 import com.miniproject2.mysalon.controller.dto.ProductDTO;
-import com.miniproject2.mysalon.controller.dto.ProductDetailDTO;
 import com.miniproject2.mysalon.controller.dto.ProductSimpleDTO;
 import com.miniproject2.mysalon.entity.*;
 import com.miniproject2.mysalon.exception.BusinessException;
@@ -11,15 +10,23 @@ import com.miniproject2.mysalon.exception.ErrorCode;
 import com.miniproject2.mysalon.repository.ProductDetailRepository;
 import com.miniproject2.mysalon.repository.ProductRepository;
 import com.miniproject2.mysalon.repository.UserRepository;
+import io.jsonwebtoken.io.IOException;
 import jakarta.persistence.criteria.Predicate;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
@@ -31,6 +38,9 @@ public class ProductService {
     private final ProductDetailRepository productDetailRepository;
     private final UserRepository userRepository;
 
+    @Value("${file.upload-dir}")
+    private String uploadDir1;
+
     public ProductDTO createProduct(ProductDTO productDTO) {
         User user = userRepository.findById(productDTO.getUserNum())
                 .orElseThrow(() -> new EntityNotFoundException("User", productDTO.getUserNum()));
@@ -39,11 +49,29 @@ public class ProductService {
         return ProductDTO.fromEntity(savedProduct);
     }
 
-    public ProductDTO createProduct2(Long userNum, CreateProductDTO.ProductRequest request) {
+    public ProductDTO createProduct2(Long userNum, CreateProductDTO.ProductRequest request, MultipartFile mainImageFile) {
         User user = userRepository.findById(userNum)
                 .orElseThrow(() -> new BusinessException(ErrorCode.USER_NOT_FOUND));
-        Product product = request.toEntity(user);
+
+        String originalFileName = null;
+        if (mainImageFile != null && !mainImageFile.isEmpty()) {
+            try {
+                // 고유한 파일명 생성 (예: UUID 사용)
+                originalFileName = UUID.randomUUID().toString() + "_" + mainImageFile.getOriginalFilename();
+                String uploadDir = "C:/uploads/";
+                Path filePath = Paths.get(uploadDir + originalFileName);
+
+                // 파일 저장
+                Files.copy(mainImageFile.getInputStream(), filePath);
+            } catch (java.io.IOException e) {
+                throw new RuntimeException("상품 이미지 업로드 실패", e);
+            }
+        }
+
+        // toEntity 메서드에 파일 이름 전달
+        Product product = request.toEntity(user, originalFileName);
         Product savedProduct = productRepository.save(product);
+
         return ProductDTO.fromEntity(savedProduct);
     }
 
@@ -87,14 +115,14 @@ public class ProductService {
         return ProductDTO.fromEntity(updatedProduct);
     }
 
-    public ProductDTO editProduct2(Long userNum, Long productId, CreateProductDTO.ProductRequest request) {
+    public ProductDTO editProduct2(Long userNum, Long productId, CreateProductDTO.ProductRequest request, MultipartFile mainImage) {
         Product existingProduct = productRepository.findById(productId)
                 .orElseThrow(() -> new BusinessException(ErrorCode.PRODUCT_NOT_FOUND));
 
         User user = userRepository.findById(userNum)
                     .orElseThrow(() -> new BusinessException(ErrorCode.USER_NOT_FOUND));
         deleteProduct(productId);
-        return createProduct2(userNum, request);
+        return createProduct2(userNum, request, mainImage);
 
     }
 

@@ -10,9 +10,11 @@ import com.miniproject2.mysalon.security.CurrentUser;
 import com.miniproject2.mysalon.service.ProductService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -29,10 +31,14 @@ public class ProductController {
         return ResponseEntity.ok(productService.createProduct(productDTO));
     }
 
-    @PostMapping("/create")
+    @PostMapping(value = "/create", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @PreAuthorize("hasAuthority('SELLER')")
-    public ResponseEntity<ProductDTO> createProduct(@CurrentUser Long userNum, @RequestBody CreateProductDTO.ProductRequest request) {
-        return ResponseEntity.ok(productService.createProduct2(userNum,request));
+    public ResponseEntity<ProductDTO> createProduct(
+            @CurrentUser Long userNum,
+            @ModelAttribute CreateProductDTO.ProductRequest request,
+            @RequestPart(value = "mainImageFile", required = false) MultipartFile mainImageFile) {
+
+        return ResponseEntity.ok(productService.createProduct2(userNum, request, mainImageFile));
     }
 
     @PutMapping("/{productId}")
@@ -44,9 +50,12 @@ public class ProductController {
     public ResponseEntity<ProductDTO> patchProduct(@PathVariable Long productId, @RequestBody ProductDTO productDTO) {
         return ResponseEntity.ok(productService.editProduct(productId, productDTO, true));
     }
-    @PatchMapping("/update/{productId}")
-    public ResponseEntity<ProductDTO> updateProduct2(@CurrentUser Long userNum,@PathVariable Long productId, @RequestBody CreateProductDTO.ProductRequest request) {
-        return ResponseEntity.ok(productService.editProduct2(userNum, productId,request));
+
+
+    @PatchMapping(value = "/update/{productId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<ProductDTO> updateProduct2(@CurrentUser Long userNum,@PathVariable Long productId, @RequestBody CreateProductDTO.ProductRequest request,
+                                                     @RequestPart(value = "mainImageFile", required = false) MultipartFile mainImageFile) {
+        return ResponseEntity.ok(productService.editProduct2(userNum, productId,request, mainImageFile));
     }
 
 

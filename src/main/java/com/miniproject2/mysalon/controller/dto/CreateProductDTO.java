@@ -4,6 +4,7 @@ import com.miniproject2.mysalon.entity.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Positive;
 import lombok.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
 import java.util.Collections;
@@ -12,7 +13,8 @@ import java.util.stream.Collectors;
 
 public class CreateProductDTO {
 
-    @Data
+    @Getter
+    @Setter
     @NoArgsConstructor
     @AllArgsConstructor
     @Builder
@@ -24,35 +26,14 @@ public class CreateProductDTO {
         private Long price;
         @NotBlank(message = "배송비는 필수입니다.")
         private Long deliveryFee;
-        private String mainImage;
         private String description;
         private Gender gender;
         private Category category;
         private CategoryLow categoryLow;
         private List<ProductDetailDTO2> productDetails;
 
-
-        public static ProductDTO fromEntity(Product product, User user) {
-            return ProductDTO.builder()
-
-                    .productNum(product.getProductNum())
-                    .userNum(product.getUser().getUserNum())
-                    .productName(product.getProductName())
-                    .price(product.getPrice())
-                    .mainImage(product.getMainImage())
-                    .description(product.getDescription())
-                    .gender(product.getGender())
-                    .category(product.getCategory())
-                    .categoryLow(product.getCategoryLow())
-                    .productDetails(product.getProductDetails() != null ? product.getProductDetails().stream()
-                            .map(ProductDetailDTO::fromEntity)
-                            .collect(Collectors.toList()) : Collections.emptyList())
-                    .build();
-        }
-
-        // DTO -> Entity
-        public Product toEntity(User user) {
-
+        // toEntity 메서드는 파일 이름(mainImage)을 매개변수로 받아 엔티티에 설정합니다.
+        public  Product toEntity(User user, String mainImage) {
             if (this.category == null) {
                 this.category = Category.ALL;
             }
@@ -62,12 +43,13 @@ public class CreateProductDTO {
             if (this.gender == null) {
                 this.gender = Gender.ALL;
             }
+
             Product product = Product.builder()
-                    .deliveryPrice(this.deliveryFee)
                     .user(user)
                     .productName(this.productName)
                     .price(this.price)
-                    .mainImage(this.mainImage)
+                    .deliveryPrice(this.deliveryFee)
+                    .mainImage(mainImage)
                     .description(this.description)
                     .gender(this.gender)
                     .likeCount(0L)
