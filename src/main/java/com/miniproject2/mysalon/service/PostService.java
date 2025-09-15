@@ -102,7 +102,7 @@ public class PostService {
     public List<PostDTO.SimpleCoordiPost> getHotCoordiPosts() {
 
         Pageable top10 = PageRequest.of(0,10, Sort.by("likeCount").descending());
-        return postRepository.findTop10ByLikeCountDesc(top10)
+        return postRepository.findTop10ByLikeCountDesc(PostType.COORDI,top10)
                 .stream()
                 .map(this::fromEntity)
                 .toList();

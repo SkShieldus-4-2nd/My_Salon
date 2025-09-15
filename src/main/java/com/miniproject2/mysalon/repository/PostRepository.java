@@ -19,8 +19,8 @@ public interface PostRepository extends JpaRepository<Post, Long> {
 
     List<Post> findByTitleContaining(String keyword);
 
-    @Query("SELECT p FROM Post p ORDER BY p.likeCount DESC")
-    List<Post> findTop10ByLikeCountDesc(Pageable pageable);
+    @Query("SELECT p FROM Post p WHERE p.postType = :postType ORDER BY p.likeCount DESC")
+    List<Post> findTop10ByLikeCountDesc(@Param("postType") PostType postType, Pageable pageable);
 
     @Query("SELECT p FROM Post p WHERE p.postType = :postType")
     List<Post> findPostsByPostTypeJPQL(@Param("postType") PostType postType);
