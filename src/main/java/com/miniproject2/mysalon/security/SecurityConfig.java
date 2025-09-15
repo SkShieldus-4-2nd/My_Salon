@@ -44,7 +44,9 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> {
                     auth.requestMatchers("/api/users/**").permitAll()
                             .requestMatchers("/swagger", "/swagger/", "/swagger-ui/**", "/v3/api-docs/**").permitAll() // Swagger 허용
+                            .requestMatchers("/products/images/**").permitAll()
                             .requestMatchers("/api/**").authenticated();
+
                 })
                 // 세션 관리 정책을 STATELESS로 설정합니다.
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
