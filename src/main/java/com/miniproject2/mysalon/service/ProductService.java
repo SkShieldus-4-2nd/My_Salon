@@ -63,6 +63,7 @@ public class ProductService {
             // Partial update
             if (StringUtils.hasText(productDTO.getProductName())) existingProduct.setProductName(productDTO.getProductName());
             if (productDTO.getPrice() != null) existingProduct.setPrice(productDTO.getPrice());
+            if (productDTO.getDeliveryPrice() != null) existingProduct.setDeliveryPrice(productDTO.getDeliveryPrice());
             if (StringUtils.hasText(productDTO.getMainImage())) existingProduct.setMainImage(productDTO.getMainImage());
             if (StringUtils.hasText(productDTO.getDescription())) existingProduct.setDescription(productDTO.getDescription());
             if (productDTO.getGender() != null) existingProduct.setGender(productDTO.getGender());
@@ -75,6 +76,7 @@ public class ProductService {
             existingProduct.setUser(user);
             existingProduct.setProductName(productDTO.getProductName());
             existingProduct.setPrice(productDTO.getPrice());
+            existingProduct.setDeliveryPrice(productDTO.getDeliveryPrice());
             existingProduct.setMainImage(productDTO.getMainImage());
             existingProduct.setDescription(productDTO.getDescription());
             existingProduct.setGender(productDTO.getGender());

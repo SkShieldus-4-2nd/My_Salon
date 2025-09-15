@@ -17,6 +17,7 @@ public class ProductSimpleDTO {
         private String productName;
         private Long price;
         private String mainImage;
+        private Gender gender;
 
         // Entity -> DTO
         public static ProductSimpleDTO.Response fromEntity(Product product) {
@@ -25,6 +26,7 @@ public class ProductSimpleDTO {
                     .productName(product.getProductName())
                     .price(product.getPrice())
                     .mainImage(product.getMainImage())
+                    .gender(product.getGender())
                     .build();
         }
 

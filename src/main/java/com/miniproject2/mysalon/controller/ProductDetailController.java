@@ -2,7 +2,11 @@ package com.miniproject2.mysalon.controller;
 
 import com.miniproject2.mysalon.controller.dto.ProductDetailDTO;
 import com.miniproject2.mysalon.service.ProductDetailService;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -84,5 +88,30 @@ public class ProductDetailController {
             @RequestParam String color) {
         ProductDetailDTO dto = productDetailService.getProductDetail(productNum, size, color);
         return ResponseEntity.ok(dto);
+    }
+
+    @PatchMapping("/update-count")
+    public ResponseEntity<ProductDetailDTO> updateCount(@RequestBody CountUpdateRequest request) {
+        ProductDetailDTO.PatchRequest patchRequest = new ProductDetailDTO.PatchRequest();
+        patchRequest.setCount(request.getCount());
+        
+        ProductDetailDTO updatedDto = productDetailService.patchProductDetail(
+            request.getProductNum(), 
+            request.getSize(), 
+            request.getColor(), 
+            patchRequest
+        );
+        return ResponseEntity.ok(updatedDto);
+    }
+
+    @Getter
+    @Setter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class CountUpdateRequest {
+        private Long productNum;
+        private String color;
+        private String size;
+        private Integer count;
     }
 }
