@@ -42,6 +42,7 @@ public class PostDTO {
 
         public static Response fromEntity(Post post) {
             return Response.builder()
+                    .postId(post.getPostNum())
                     .title(post.getTitle())
                     .text(post.getText())
                     .likeCount(post.getLikeCount())
