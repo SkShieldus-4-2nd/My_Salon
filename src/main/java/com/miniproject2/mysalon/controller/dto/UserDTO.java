@@ -86,4 +86,13 @@ public class UserDTO {
         private String password;
 
     }
+    @Data
+    @NoArgsConstructor
+    @AllArgsConstructor
+    @Builder
+    public static class LoginResponse {
+        private String token;
+        private UserType role;
+    }
+
 }

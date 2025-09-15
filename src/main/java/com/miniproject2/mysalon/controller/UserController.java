@@ -23,8 +23,6 @@ import java.util.List;
 public class UserController {
 
     private final UserService userService;
-    private final AuthenticationManager authenticationManager;
-    private final JwtService jwtService;
     // ✅ 유저 생성
     @PostMapping
     public ResponseEntity<UserDTO.Response> createUser(@Valid @RequestBody UserDTO.Request request) {
@@ -69,16 +67,8 @@ public class UserController {
 
     //jwt 토큰 생성
     @PostMapping("/login")
-    public String authenticateAndGetToken(@RequestBody UserDTO.LoginRequest authRequest) {
-        Authentication authentication = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(
-                        authRequest.getId(),
-                        authRequest.getPassword()
-                ));
-        if (authentication.isAuthenticated()) {
-            return jwtService.generateToken(authRequest.getId());
-        } else {
-            throw new UsernameNotFoundException("invalid user request !");
-        }
+    public ResponseEntity<UserDTO.LoginResponse>  authenticateAndGetToken(@RequestBody UserDTO.LoginRequest authRequest) {
+        UserDTO.LoginResponse userResponse = userService.login(authRequest);
+        return ResponseEntity.ok(userResponse);
     }
 }

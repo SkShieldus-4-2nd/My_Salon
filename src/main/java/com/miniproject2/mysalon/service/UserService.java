@@ -6,9 +6,14 @@ import com.miniproject2.mysalon.exception.BusinessException;
 import com.miniproject2.mysalon.exception.ErrorCode;
 import com.miniproject2.mysalon.repository.UserRepository;
 
+import com.miniproject2.mysalon.security.jwt.JwtService;
 import lombok.RequiredArgsConstructor;
 //import org.springframework.security.crypto.password.PasswordEncoder;
 //import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,7 +27,8 @@ public class UserService  {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
-
+    private final AuthenticationManager authenticationManager;
+    private final JwtService jwtService;
 
     // 유저 생성
     public UserDTO.Response createUser(UserDTO.Request request) {
@@ -98,6 +104,31 @@ public class UserService  {
         User user = userRepository.findById(userNum)
                 .orElseThrow(() -> new BusinessException(ErrorCode.USER_NOT_FOUND));
         return UserDTO.Response.fromEntity(user);
+    }
+
+    @Transactional(readOnly = true)
+    public UserDTO.LoginResponse login(UserDTO.LoginRequest authRequest) {
+        User user = userRepository.findById(authRequest.getId())
+                .orElseThrow(() -> new BusinessException(ErrorCode.USER_NOT_FOUND));
+
+        if (!passwordEncoder.matches(authRequest.getPassword(), user.getPassword())) {
+            throw new BusinessException(ErrorCode.AUTH_INVALID_CREDENTIALS);
+        }
+        Authentication authentication = authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(
+                        authRequest.getId(),
+                        authRequest.getPassword()
+                ));
+        if (authentication.isAuthenticated()) {
+            String token =  jwtService.generateToken(authRequest.getId());
+            return UserDTO.LoginResponse.builder()
+                    .token(token)
+                    .role(user.getType())
+                    .build();
+        } else {
+            throw new UsernameNotFoundException("invalid user request !");
+        }
+
     }
 
 
