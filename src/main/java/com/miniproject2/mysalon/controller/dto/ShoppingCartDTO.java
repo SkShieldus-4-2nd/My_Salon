@@ -17,7 +17,7 @@ public class ShoppingCartDTO {
 
         @NotNull(message = "상품 상세 번호는 필수 입력 항목입니다.")
         private Long productDetailNum;
-        @Positive(message = "상품 수량은 양수여야 합니다.")
+
         private int count;
 
         private boolean isSelected;

@@ -11,7 +11,6 @@ import com.miniproject2.mysalon.repository.PostRepository;
 import com.miniproject2.mysalon.repository.UserRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -23,14 +22,14 @@ public class CommentService {
     private final UserRepository userRepository;
     private final PostRepository postRepository;
 
-    public CommentDTO.Response createComment(Long userNum, Long postNum, String text) {
+    public CommentDTO.Response createComment(Long userNum, CommentDTO.CommentRequest commentRequest) {
         User user = userRepository.findById(userNum).orElseThrow(() -> new BusinessException(ErrorCode.USER_NOT_FOUND));
-        Post post = postRepository.findById(postNum).orElseThrow(() -> new BusinessException(ErrorCode.POST_NOT_FOUND));
+        Post post = postRepository.findById(commentRequest.getPostNum()).orElseThrow(() -> new BusinessException(ErrorCode.POST_NOT_FOUND));
 
         Comment comment = Comment.builder()
                 .user(user)
                 .post(post)
-                .text(text)
+                .text(commentRequest.getText())
                 .build();
 
         Comment saved = commentRepository.save(comment);

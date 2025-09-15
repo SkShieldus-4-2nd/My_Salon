@@ -58,6 +58,7 @@ public class PostDTO {
     @AllArgsConstructor
     @Builder
     public static class SimplePost {
+        private Long postNum;
         private String image;
         private String title;
         private String writer;
@@ -67,6 +68,7 @@ public class PostDTO {
 
         public static SimplePost fromEntity(Post post) {
             return SimplePost.builder()
+                    .postNum(post.getPostNum())
                     .image(post.getImage())
                     .title(post.getTitle())
                     .writer(post.getUser().getUserName())

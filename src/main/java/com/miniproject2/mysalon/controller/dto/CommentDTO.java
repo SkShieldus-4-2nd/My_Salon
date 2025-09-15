@@ -13,10 +13,7 @@ public class CommentDTO {
     @NoArgsConstructor
     @AllArgsConstructor
     @Builder
-    public static class Request {
-
-        @NotNull(message = "작성자 번호는 필수 입력 항목입니다.")
-        private Long userNum;
+    public static class CommentRequest {
 
         @NotNull(message = "게시글 번호는 필수 입력 항목입니다.")
         private Long postNum;
