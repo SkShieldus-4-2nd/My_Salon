@@ -85,8 +85,8 @@ public class ProductController {
         }
     }
 
-    @GetMapping("/{userId}")
-    public ResponseEntity<List<ProductDTO>> getAllProductsByUser(@PathVariable Long userId) {
+    @GetMapping("/my-products")
+    public ResponseEntity<List<ProductDTO>> getAllProductsByUser(@CurrentUser Long userId) {
         return ResponseEntity.ok(productService.getAllProductsByUser(userId));
     }
     @GetMapping("/all-products")
