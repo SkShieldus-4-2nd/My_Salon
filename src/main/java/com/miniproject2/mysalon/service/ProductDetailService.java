@@ -1,6 +1,8 @@
 package com.miniproject2.mysalon.service;
 
+import com.miniproject2.mysalon.controller.dto.CreateProductDTO;
 import com.miniproject2.mysalon.controller.dto.ProductDetailDTO;
+import com.miniproject2.mysalon.entity.OrderStatus;
 import com.miniproject2.mysalon.entity.Product;
 import com.miniproject2.mysalon.entity.ProductDetail;
 import com.miniproject2.mysalon.exception.BusinessException;
@@ -166,5 +168,17 @@ public class ProductDetailService {
         ProductDetail productDetail = productDetailRepository.findByProduct_ProductNumAndSizeAndColor(productNum, size, color)
                 .orElseThrow(() -> new BusinessException(ErrorCode.USER_NOT_FOUND));
         productDetailRepository.delete(productDetail);
+    }
+
+    public List<CreateProductDTO.OrderedProductDetailDTO> getAllOrderedProductDetails(Long userNum) {
+        return productDetailRepository.findByOrderDetail_OrderStatusAndProduct_User_UserNum(OrderStatus.ORDERED,userNum).stream()
+                .map(CreateProductDTO.OrderedProductDetailDTO::fromEntity)
+                .collect(Collectors.toList());
+    }
+
+    public List<CreateProductDTO.SoldProductDetailDTO> getAllSoldProductDetails(Long userNum) {
+        return productDetailRepository.findByOrderDetail_OrderStatusAndProduct_User_UserNum(OrderStatus.DELIVERED,userNum).stream()
+                .map(CreateProductDTO.SoldProductDetailDTO::fromEntity)
+                .collect(Collectors.toList());
     }
 }

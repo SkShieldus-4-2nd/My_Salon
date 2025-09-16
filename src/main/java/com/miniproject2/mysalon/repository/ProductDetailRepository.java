@@ -1,5 +1,6 @@
 package com.miniproject2.mysalon.repository;
 
+import com.miniproject2.mysalon.entity.OrderStatus;
 import com.miniproject2.mysalon.entity.Product;
 import com.miniproject2.mysalon.entity.ProductDetail;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -22,4 +23,6 @@ public interface ProductDetailRepository extends JpaRepository<ProductDetail, Lo
     List<ProductDetail> findByColorAndSize(String color, String size);
 
     Optional<ProductDetail> findByProduct_ProductNumAndSizeAndColor(Long productNum, String size, String color);
+
+    List<ProductDetail> findByOrderDetail_OrderStatusAndProduct_User_UserNum(OrderStatus orderStatus,Long userNum);
 }

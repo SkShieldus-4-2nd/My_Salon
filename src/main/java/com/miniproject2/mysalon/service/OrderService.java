@@ -69,7 +69,6 @@ public class OrderService {
         for (OrderDTO.OrderItemDTO itemDto : request.getOrderItems()) {
             ProductDetail productDetail = productDetailRepository.findById(itemDto.getProductDetailNum())
                     .orElseThrow(() -> new BusinessException(ErrorCode.PRODUCT_NOT_FOUND));
-
             OrderDetail orderDetail = OrderDetail.builder()
                     .order(order)
                     .productDetail(productDetail)

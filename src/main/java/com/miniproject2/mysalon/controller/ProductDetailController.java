@@ -1,6 +1,8 @@
 package com.miniproject2.mysalon.controller;
 
+import com.miniproject2.mysalon.controller.dto.CreateProductDTO;
 import com.miniproject2.mysalon.controller.dto.ProductDetailDTO;
+import com.miniproject2.mysalon.security.CurrentUser;
 import com.miniproject2.mysalon.service.ProductDetailService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -84,5 +86,17 @@ public class ProductDetailController {
             @RequestParam String color) {
         ProductDetailDTO dto = productDetailService.getProductDetail(productNum, size, color);
         return ResponseEntity.ok(dto);
+    }
+
+    @GetMapping("/ordered-products")
+    public ResponseEntity<List<CreateProductDTO.OrderedProductDetailDTO>> getAllOrderedProductDetails(@CurrentUser Long userNum) {
+        List<CreateProductDTO.OrderedProductDetailDTO> dtoList = productDetailService.getAllOrderedProductDetails(userNum);
+        return ResponseEntity.ok(dtoList);
+    }
+
+    @GetMapping("/sold-products")
+    public ResponseEntity<List<CreateProductDTO.SoldProductDetailDTO>> getAllSoldProductDetails(@CurrentUser Long userNum) {
+        List<CreateProductDTO.SoldProductDetailDTO> dtoList = productDetailService.getAllSoldProductDetails(userNum);
+        return ResponseEntity.ok(dtoList);
     }
 }
