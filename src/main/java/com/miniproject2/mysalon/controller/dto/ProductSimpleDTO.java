@@ -17,6 +17,7 @@ public class ProductSimpleDTO {
         private String productName;
         private Long price;
         private String mainImage;
+        private Gender gender;
 
         // Entity -> DTO
         public static ProductSimpleDTO.Response fromEntity(Product product) {
@@ -25,6 +26,7 @@ public class ProductSimpleDTO {
                     .productName(product.getProductName())
                     .price(product.getPrice())
                     .mainImage(product.getMainImage())
+                    .gender(product.getGender())
                     .build();
         }
 
@@ -67,6 +69,7 @@ public class ProductSimpleDTO {
     @Builder
     public static class ProductDetailDTO {
 
+        private Long productDetailNum;
         private int count;
         private String color;
         private String size;
@@ -75,6 +78,7 @@ public class ProductSimpleDTO {
         public static ProductDetailDTO fromEntity(ProductDetail entity){
 
             return ProductDetailDTO.builder()
+                    .productDetailNum(entity.getProductDetailNum())
                     .color(entity.getColor())
                     .size(entity.getSize())
                     .count(entity.getCount())
