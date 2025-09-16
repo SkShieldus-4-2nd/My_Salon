@@ -167,4 +167,15 @@ public class ProductService {
                 .orElseThrow(() -> new BusinessException(ErrorCode.PRODUCT_NOT_FOUND));
         return ProductSimpleDTO.ProductDetailResponse.fromEntity(product);
     }
+
+    public Long getFirstProductDetailNum(Long productId) {
+        // ProductDetails를 직접 조회
+        List<ProductDetail> productDetails = productDetailRepository.findByProduct_ProductNum(productId);
+        
+        if (productDetails.isEmpty()) {
+            throw new BusinessException(ErrorCode.PRODUCT_DETAIL_NOT_FOUND);
+        }
+        
+        return productDetails.get(0).getProductDetailNum();
+    }
 }

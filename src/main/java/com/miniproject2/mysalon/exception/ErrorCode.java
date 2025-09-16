@@ -26,6 +26,7 @@ public enum ErrorCode {
     USER_NAME_DUPLICATE("USER_002","중복된 이름입니다.", HttpStatus.BAD_REQUEST),
     //상품 관련
     PRODUCT_NOT_FOUND("PRODUCT_001", "상품을 찾을 수 없습니다", HttpStatus.NOT_FOUND),
+    PRODUCT_DETAIL_NOT_FOUND("PRODUCT_002", "상품 상세 정보를 찾을 수 없습니다", HttpStatus.NOT_FOUND),
 
 
 

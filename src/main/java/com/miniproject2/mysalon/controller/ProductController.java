@@ -181,4 +181,9 @@ public class ProductController {
         return ResponseEntity.ok(productService.getProductById(productId));
     }
 
+    @GetMapping("/{productId}/first-detail")
+    public ResponseEntity<Long> getFirstProductDetailNum(@PathVariable Long productId) {
+        return ResponseEntity.ok(productService.getFirstProductDetailNum(productId));
+    }
+
 }
