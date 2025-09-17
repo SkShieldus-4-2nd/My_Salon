@@ -65,7 +65,7 @@ public class ReviewService {
                     extension = originalFilename.substring(originalFilename.lastIndexOf("."));
                 }
 
-                String safeFilename = text.replaceAll("[^a-zA-Z0-9가-힣]", "_");
+                String safeFilename = originalFilename != null ? originalFilename.replaceAll("[^a-zA-Z0-9가-힣]", "_") : "review";
                 if (safeFilename.length() > 30) {
                     safeFilename = safeFilename.substring(0, 30);
                 }
@@ -74,14 +74,15 @@ public class ReviewService {
                 Path filePath = uploadPath.resolve(safeFilename);
                 reviewImage.transferTo(filePath.toFile());
 
-                String fileUrl = "/uploads/review/" + savedReview.getReviewNum() + "/" + safeFilename;
-                savedReview.setReviewImage(fileUrl);
+                // ✅ DB에는 파일명만 저장
+                savedReview.setReviewImage(safeFilename);
                 reviewRepository.save(savedReview);
 
             } catch (IOException e) {
                 throw new RuntimeException("Could not store the file. Error: " + e.getMessage());
             }
         }
+
 
         return ReviewDTO.Response.fromEntity(savedReview);
     }

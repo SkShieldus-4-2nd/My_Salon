@@ -18,8 +18,15 @@ public class WebConfig implements WebMvcConfigurer {
 
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
-        String imagePath = "file:///C:/uploads/";
+        // 기존 product 이미지 경로 유지
+        String productPath = "file:///C:/uploads/";
         registry.addResourceHandler("/products/images/**")
-                .addResourceLocations(imagePath);
+                .addResourceLocations(productPath);
+
+        // 리뷰 이미지 경로 추가
+        String reviewPath = "file:///C:/MySalon/uploads/review/";
+        registry.addResourceHandler("/reviews/images/**")
+                .addResourceLocations(reviewPath);
     }
+
 }

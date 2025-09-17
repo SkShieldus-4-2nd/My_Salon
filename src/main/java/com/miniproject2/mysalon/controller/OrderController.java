@@ -25,11 +25,14 @@ public class OrderController {
         return ResponseEntity.ok(orderService.createOrder(request, userNum));
     }
 
+
     @PostMapping("/create")
     @PreAuthorize("hasAuthority('SELLER') or hasAuthority('BUYER')")
     public ResponseEntity<OrderDTO.OrderCompleteResponse> createOrder2(@CurrentUser Long userNum, @RequestBody OrderDTO.CreateOrderRequest request) {
         return ResponseEntity.ok(orderService.createOrder2(request, userNum));
     }
+
+
 
     @GetMapping("/count")
     @PreAuthorize("hasAuthority('SELLER') or hasAuthority('BUYER')")
@@ -37,6 +40,7 @@ public class OrderController {
         Long count = orderService.getOrdersCount(userNum);
         return ResponseEntity.ok(count);
     }
+
 
     @GetMapping
     public ResponseEntity<List<OrderDTO.OrderResponse>> getAllOrders() {

@@ -45,6 +45,7 @@ public class SecurityConfig {
                     auth.requestMatchers("/api/users/**").permitAll()
                             .requestMatchers("/swagger", "/swagger/", "/swagger-ui/**", "/v3/api-docs/**").permitAll() // Swagger 허용
                             .requestMatchers("/products/images/**").permitAll()
+                            .requestMatchers("/reviews/images/**").permitAll()
                             .requestMatchers("/api/**").authenticated();
 
                 })

@@ -17,6 +17,8 @@ import lombok.Builder;
 public class ProductDetailDTO {
     private Long productDetailNum;
     private Long productNum;
+    private String productName;
+    private Long price;
     private String color;
     private String size;
     private int count; // stock -> count
@@ -26,6 +28,8 @@ public class ProductDetailDTO {
         return new ProductDetailDTO(
                 entity.getProductDetailNum(),
                 entity.getProduct().getProductNum(),
+                entity.getProduct().getProductName(),
+                entity.getProduct().getPrice(),
                 entity.getColor(),
                 entity.getSize(),
                 entity.getCount(), // getStock() -> getCount()

@@ -124,8 +124,12 @@ public class OrderDTO {
         private Long orderNum;//주문 번호
         private Long orderDetailNum;
         private String productName;
+        private Long productDetailNum;
         private String description;
         private Long price;
+        private String color;
+        private String size;
+        private String mainImage;
         private OrderStatus orderStatus;
 
         public static OrderListResponse fromEntity(OrderDetail orderDetail) {
@@ -133,8 +137,12 @@ public class OrderDTO {
                     .orderNum(orderDetail.getOrder().getOrderNum())
                     .orderDetailNum(orderDetail.getOrderDetailNum())
                     .productName(orderDetail.getProductDetail().getProduct().getProductName())
+                    .productDetailNum(orderDetail.getProductDetail().getProductDetailNum())
                     .description(orderDetail.getProductDetail().getProduct().getDescription())
                     .price(orderDetail.getProductDetail().getProduct().getPrice())
+                    .color(orderDetail.getProductDetail().getColor())
+                    .size(orderDetail.getProductDetail().getSize())
+                    .mainImage(orderDetail.getProductDetail().getProduct().getMainImage())
                     .orderStatus(orderDetail.getOrderStatus())
                     .build();
         }
